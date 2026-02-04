@@ -1,8 +1,12 @@
 package com.example.glog.ui.viewmodels
 
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.glog.ui.state.GamesEvent
 import com.example.glog.ui.state.GamesState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,4 +41,3 @@ class GamesViewModel @Inject constructor(
     }
 }
 
-Repositorio:
