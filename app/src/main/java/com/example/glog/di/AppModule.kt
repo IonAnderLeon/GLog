@@ -1,6 +1,6 @@
 package com.example.glog.di
 
-import com.example.glog.data.network.common.K.BASE_URL
+import com.example.glog.data.network.routes.K.BASE_URL
 import com.example.glog.data.network.api.GameApiService
 import com.example.glog.data.network.api.RetrofitClient
 import com.example.glog.domain.repository.GameRepository
