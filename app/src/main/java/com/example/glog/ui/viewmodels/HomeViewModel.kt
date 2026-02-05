@@ -18,38 +18,38 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val gameRepository: GameRepository
 ) : ViewModel() {
-
-    var state by mutableStateOf(HomeUiState())
-        private set
-
-    init {
-        loadHomeData()
-    }
-
-    fun onEvent(event: HomeEvent) = when (event) {
-        HomeEvent.ReloadData -> loadHomeData()
-        is HomeEvent.OnSearchTextChange -> state = state.copy(searchText = event.text)
-        HomeEvent.ToggleSearchBar -> state = state.copy(showSearchBar = !state.showSearchBar)
-        is HomeEvent.OnGameClick -> Unit // UI maneja navegación
-    }
-
-    private fun loadHomeData() = viewModelScope.launch {
-        state = state.copy(isLoading = true)
-
-        val recentResult = gameRepository.getRecentGames()
-        val popularResult = gameRepository.getPopularGames()
-        val recommendedResult = gameRepository.getRecommendedGames()
-
-        // Combinar resultados
-        state = state.copy(
-            recentGames = recentResult.getOrDefault(emptyList()),
-            popularGames = popularResult.getOrDefault(emptyList()),
-            recommendedGames = recommendedResult.getOrDefault(emptyList()),
-            isLoading = false,
-            error = listOf(recentResult, popularResult, recommendedResult)
-                .firstOrNull { it.isFailure }
-                ?.exceptionOrNull()
-                ?.message
-        )
-    }
+//
+//    var state by mutableStateOf(HomeUiState())
+//        private set
+//
+//    init {
+//        loadHomeData()
+//    }
+//
+//    fun onEvent(event: HomeEvent) = when (event) {
+//        HomeEvent.ReloadData -> loadHomeData()
+//        is HomeEvent.OnSearchTextChange -> state = state.copy(searchText = event.text)
+//        HomeEvent.ToggleSearchBar -> state = state.copy(showSearchBar = !state.showSearchBar)
+//        is HomeEvent.OnGameClick -> Unit // UI maneja navegación
+//    }
+//
+//    private fun loadHomeData() = viewModelScope.launch {
+//        state = state.copy(isLoading = true)
+//
+//        val recentResult = gameRepository.getRecentGames()
+//        val popularResult = gameRepository.getPopularGames()
+//        val recommendedResult = gameRepository.getRecommendedGames()
+//
+//        // Combinar resultados
+//        state = state.copy(
+//            recentGames = recentResult.getOrDefault(emptyList()),
+//            popularGames = popularResult.getOrDefault(emptyList()),
+//            recommendedGames = recommendedResult.getOrDefault(emptyList()),
+//            isLoading = false,
+//            error = listOf(recentResult, popularResult, recommendedResult)
+//                .firstOrNull { it.isFailure }
+//                ?.exceptionOrNull()
+//                ?.message
+//        )
+//    }
 }
