@@ -1,25 +1,24 @@
 package com.example.glog.data.mapper
 
-//import com.example.glog.data.network.dto.GameDTO
-//import com.example.glog.domain.model.Game
-//
-////Ejemplo a modificar mas adelante
-//class GameMapper {
-//    fun toEntity(dto: GameDTO): Game {
-//        return Game(
-//            id_game = dto.id.toString(),
-//            name = dto.name,
-//            releaseDate = dto.year),
-//            platforms = emptyList() // Aquí otro mapper buscaría los objetos completos
-//        )
-//    }
-//
-//    fun toDto(entity: Game): GameDto {
-//        return GameDto(
-//            id = entity.id.toLong(),
-//            title = entity.title,
-//            release_date = entity.releaseDate.toString(),
-//            platform_ids = entity.platforms.map { it.id.toLong() }
-//        )
-//    }
-//}
+import com.example.glog.data.mapper.constants.Utils.formatEmpty
+import com.example.glog.data.network.dto.GameDTO
+import com.example.glog.data.network.dto.GameDetailDTO
+import com.example.glog.domain.model.Game
+
+
+class GameMapper {
+
+    fun toEntity(dto: GameDetailDTO): Game {
+        return Game(
+            id = dto.game?.id?.toString().formatEmpty("0"),
+            title = dto.game?.name.formatEmpty("Sin título"),
+            imageUrl = dto.game?.image.formatEmpty("Imagen desconocida"),
+            releaseYear = dto.game?.year,
+            rating = dto.game?.rating ?: 0.0,
+            // Solo IDs como strings
+            platformName = dto.platformName.formatEmpty("Plataforma desconocida"),
+            genreName = dto.genreName.formatEmpty("Género desconocido")
+        )
+    }
+
+}

@@ -1,7 +1,6 @@
 package com.example.glog.data.repository
 
 import com.example.glog.data.mapper.GameMapper
-import com.example.glog.data.network.api.GameApiService
 import com.example.glog.domain.model.Game
 import com.example.glog.domain.repository.GameRepository
 import javax.inject.Inject

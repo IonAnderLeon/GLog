@@ -1,11 +1,11 @@
 package com.example.glog.domain.model
 
 data class Game(
-    val id_game: Int,
-    val image: String,
-    val name: String,
-    val year: Int,
-    val rating: Float,
-    val id_platform: Int,
-    val id_genre: Int
+    val id: String,                    // Non-null
+    val title: String?,         // Nullable
+    val imageUrl: String?,      // Nullable
+    val releaseYear: Int?,      // Nullable
+    val rating: Double?,         // Nullable
+    val platformName: String?,  // Nullable
+    val genreName: String?     // Nullable
 )

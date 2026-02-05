@@ -1,8 +1,8 @@
 package com.example.glog.di
 
+import com.example.glog.data.mapper.GameMapper
+import com.example.glog.data.network.api.GLogApiService
 import com.example.glog.data.network.routes.K.BASE_URL
-import com.example.glog.data.network.api.GameApiService
-import com.example.glog.data.network.api.RetrofitClient
 import com.example.glog.domain.repository.GameRepository
 import com.example.glog.data.repository.GameRepositoryImpl
 import dagger.Module
@@ -12,6 +12,11 @@ import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
+
+
+/*
+Solo imoplementado las injecciones a game, faltan el resto
+ */
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -27,14 +32,23 @@ object AppModule {
     }
 
     @Provides
-    fun provideGameRepository(apiService: GameApiService): GameRepository {
-        return GameRepositoryImpl(apiService)
+    @Singleton
+    fun provideGameApiService(retrofit: Retrofit): GLogApiService {
+        return retrofit.create(GLogApiService::class.java)
     }
 
     @Provides
-    @Singleton
-    fun provideGameApiService(): GameApiService {
-        return RetrofitClient.createGameApiService()
+    fun provideGameMapper(): GameMapper = GameMapper()
+
+
+    @Provides
+    fun provideGameRepository(
+        apiService: GLogApiService,
+        gameMapper: GameMapper
+    ): GameRepository {
+        return GameRepositoryImpl(apiService, gameMapper)
     }
+
+
 
 }
