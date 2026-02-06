@@ -1,7 +1,7 @@
 package com.example.glog.domain.model
 
 data class Game(
-    val id: String,                    // Non-null
+    val id: Int,                    // Non-null
     val title: String?,         // Nullable
     val imageUrl: String?,      // Nullable
     val releaseYear: Int?,      // Nullable

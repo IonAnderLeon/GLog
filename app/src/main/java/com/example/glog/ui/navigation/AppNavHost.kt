@@ -26,9 +26,7 @@ fun AppNavHost(
         // Pantalla Home
         composable(Destination.Home.route) {
             HomeScreen(
-                onGameClick = { gameId ->
-                    navController.navigate(Destination.GameDetails.createRoute(gameId))
-                }
+                navController = navController
             )
         }
 
@@ -39,11 +37,7 @@ fun AppNavHost(
 
         // Pantalla Profile
         composable(Destination.Profile.route) {
-            UserScreen(
-                onSettingsClick = {
-                    navController.navigate(Destination.Settings.route)
-                }
-            )
+            UserScreen()
         }
 
         // Pantalla de detalles (secundaria)
@@ -55,16 +49,10 @@ fun AppNavHost(
         ) { backStackEntry ->
             val gameId = backStackEntry.arguments?.getString("id") ?: ""
             GameInfoScreen(
-                gameId = gameId,
-                onBack = { navController.navigateUp() }
+//                gameId = gameId,
+//                onBack = { navController.navigateUp() }
             )
         }
 
-        // Pantalla de configuración (secundaria)
-        composable(Destination.Settings.route) {
-            SettingsScreen(
-                onBack = { navController.navigateUp() }
-            )
-        }
     }
 }

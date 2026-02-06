@@ -56,11 +56,13 @@ dependencies {
 
     //Dependency Injection
     implementation("com.google.dagger:hilt-android:2.48")
+    implementation(libs.androidx.lifecycle.runtime.compose)
     kapt("com.google.dagger:hilt-android-compiler:2.48")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
 
     //ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.5")
 
     //Network
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -68,6 +70,10 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
+
+
+    // Coil para cargar imágenes desde URL
+    implementation("io.coil-kt:coil-compose:2.5.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

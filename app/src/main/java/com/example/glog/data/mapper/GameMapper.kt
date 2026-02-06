@@ -10,7 +10,7 @@ class GameMapper {
 
     fun toEntity(dto: GameDetailDTO): Game {
         return Game(
-            id = dto.game?.id?.toString().formatEmpty("0"),
+            id = dto.game?.id ?: 0,
             title = dto.game?.name.formatEmpty("Sin título"),
             imageUrl = dto.game?.image.formatEmpty("Imagen desconocida"),
             releaseYear = dto.game?.year,

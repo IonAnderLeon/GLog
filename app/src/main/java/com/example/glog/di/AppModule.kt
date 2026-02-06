@@ -4,7 +4,7 @@ import com.example.glog.data.mapper.GameMapper
 import com.example.glog.data.network.api.GLogApiService
 import com.example.glog.data.network.routes.K.BASE_URL
 import com.example.glog.domain.repository.GameRepository
-import com.example.glog.data.repository.GameRepositoryImpl
+import com.example.glog.domain.repository.GameRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
