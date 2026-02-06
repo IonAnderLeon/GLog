@@ -3,30 +3,68 @@ package com.example.glog.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.glog.ui.screens.ClusterScreen
+import com.example.glog.ui.screens.GameInfoScreen
 import com.example.glog.ui.screens.HomeScreen
 import com.example.glog.ui.screens.UserScreen
 
+// ui/navigation/AppNavHost.kt
 @Composable
 fun AppNavHost(
     navController: NavHostController,
-    startDestination: Destination,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     NavHost(
-        navController,
-        startDestination = startDestination.route
+        navController = navController,
+        startDestination = Destination.Home.route,
+        modifier = modifier
     ) {
-        Destination.entries.forEach { destination ->
-            composable(destination.route) {
-                when (destination) {
-                    Destination.HOME -> HomeScreen()
-                    Destination.CLUSTER -> ClusterScreen()
-                    Destination.USER -> UserScreen()
+        // Pantalla Home
+        composable(Destination.Home.route) {
+            HomeScreen(
+                onGameClick = { gameId ->
+                    navController.navigate(Destination.GameDetails.createRoute(gameId))
                 }
-            }
+            )
+        }
+
+        // Pantalla Cluster
+        composable(Destination.Cluster.route) {
+            ClusterScreen()
+        }
+
+        // Pantalla Profile
+        composable(Destination.Profile.route) {
+            UserScreen(
+                onSettingsClick = {
+                    navController.navigate(Destination.Settings.route)
+                }
+            )
+        }
+
+        // Pantalla de detalles (secundaria)
+        composable(
+            route = Destination.GameDetails.route,
+            arguments = listOf(
+                navArgument("id") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val gameId = backStackEntry.arguments?.getString("id") ?: ""
+            GameInfoScreen(
+                gameId = gameId,
+                onBack = { navController.navigateUp() }
+            )
+        }
+
+        // Pantalla de configuración (secundaria)
+        composable(Destination.Settings.route) {
+            SettingsScreen(
+                onBack = { navController.navigateUp() }
+            )
         }
     }
 }

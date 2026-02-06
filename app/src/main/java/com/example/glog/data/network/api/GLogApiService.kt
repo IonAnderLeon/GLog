@@ -24,6 +24,10 @@ import retrofit2.http.Query
 interface GLogApiService {
 
     // 🎮 JUEGOS
+
+    @GET(K.GAMES)
+    suspend fun getAllGames(): List<GameDetailDTO>
+
     @GET(K.GAMES)
     suspend fun getGames(
         @Query(K.QUERY_SEARCH) search: String? = null

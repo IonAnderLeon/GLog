@@ -10,6 +10,16 @@ class GameRepositoryImpl @Inject constructor(
     private val gameMapper: GameMapper
 ) : GameRepository {
 
+    override suspend fun getAllGames(): Result<List<Game>> {
+        return try {
+            val dtos = apiService.getAllGames()
+            val games = dtos.map { gameMapper.toEntity(it) }
+            Result.success(games)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     override suspend fun getGames(search: String?): Result<List<Game>> {
         return try {
             val dtos = apiService.getGames(search)
