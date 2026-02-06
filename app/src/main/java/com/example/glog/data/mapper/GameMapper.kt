@@ -12,7 +12,7 @@ class GameMapper {
         return Game(
             id = dto.game?.id ?: 0,
             title = dto.game?.name.formatEmpty("Sin título"),
-            imageUrl = dto.game?.image.formatEmpty("Imagen desconocida"),
+            imageUrl = dto.game?.image.takeIf { !it.isNullOrBlank() },
             releaseYear = dto.game?.year,
             rating = dto.game?.rating ?: 0.0,
             // Solo IDs como strings

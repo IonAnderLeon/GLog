@@ -35,9 +35,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.glog.R
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -90,6 +92,18 @@ private fun HomeContent(
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )
+
+        // Error de red / API (ej. no llega el select)
+        uiState.error?.let { errorMsg ->
+            Text(
+                text = "Error: $errorMsg",
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                fontSize = 14.sp
+            )
+        }
 
         // Barra de búsqueda
         Row(
@@ -186,10 +200,12 @@ private fun GameCard(
             .clickable(onClick = onClick)
     ) {
         AsyncImage(
-            model = game.imageUrl ?: "",
+            model = game.imageUrl?.takeIf { it.isNotBlank() },
             contentDescription = game.title,
             modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
+            placeholder = painterResource(R.drawable.placeholder),
+            error = painterResource(R.drawable.placeholder)
         )
 
         // Título superpuesto

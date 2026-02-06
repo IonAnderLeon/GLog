@@ -1,23 +1,20 @@
 package com.example.glog.data.network.dto
 
+import com.google.gson.annotations.SerializedName
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-
-@Serializable
 data class GameDTO(
-    @SerialName("genreId")
+    @SerializedName("genreId")
     val genreId: Int? = null,
-    @SerialName("idGame")
+    @SerializedName("idGame")
     val id: Int? = null,
-    @SerialName("image")
+    @SerializedName("image")
     val image: String? = null,
-    @SerialName("name")
+    @SerializedName("name")
     val name: String? = null,
-    @SerialName("platformId")
+    @SerializedName("platformId")
     val platformId: Int? = null,
-    @SerialName("rating")
+    @SerializedName("rating")
     val rating: Double? = null,
-    @SerialName("year")
+    @SerializedName("year")
     val year: Int? = null
 )
