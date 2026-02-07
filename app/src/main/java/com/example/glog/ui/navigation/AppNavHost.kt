@@ -47,10 +47,8 @@ fun AppNavHost(
                 navArgument("id") { type = NavType.StringType }
             )
         ) { backStackEntry ->
-            val gameId = backStackEntry.arguments?.getString("id") ?: ""
             GameInfoScreen(
-//                gameId = gameId,
-//                onBack = { navController.navigateUp() }
+                navController =navController
             )
         }
 
