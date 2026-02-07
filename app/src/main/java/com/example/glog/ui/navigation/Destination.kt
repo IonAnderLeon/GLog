@@ -15,8 +15,8 @@ sealed class Destination(
     object Profile : Destination("profile")
 
     // Pantallas secundarias (sin bottom bar)
-    object GameDetails : Destination("game/{id}") {
-        fun createRoute(id: String) = "game/$id"
+    object GameDetails : Destination("gameInfo/{id}") {
+        fun createRoute(id: String) = "gameInfo/$id"
     }
 
     object Settings : Destination("settings")
