@@ -149,9 +149,9 @@ private fun TopGameInfo(game: Game) {
                 text = game.title ?: "Sin título",
                 style = MaterialTheme.typography.titleLarge
             )
-            Text(text = "${game.releaseYear ?: "N/A"} · RELEASE DATE")
-            Text(text = "${game.platformName ?: "Desconocida"} · PLATFORM")
-            Text(text = "${game.genreName ?: "Desconocido"} · GENRE")
+            Text(text = "RELEASE DATE · ${game.releaseYear ?: "N/A"}")
+            Text(text = "PLATFORM · ${game.platformName ?: "Desconocida"}")
+            Text(text = "GENRE · ${game.genreName ?: "Desconocido"}")
         }
 
         AsyncImage(
