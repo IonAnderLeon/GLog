@@ -12,7 +12,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 
 @Composable
-fun AppBottomNavigationBar(
+fun BottomNavigationBar(
     navController: NavHostController,
     items: List<BottomNavItem>,
     modifier: Modifier = Modifier
@@ -45,6 +45,16 @@ fun AppBottomNavigationBar(
                 label = { Text(item.label) }
             )
         }
+    }
+}
+
+private fun shouldShowBottomBar(route: String?): Boolean {
+    return when (route) {
+        Destination.Home.route,
+        Destination.Cluster.route,
+        Destination.Profile.route,
+        Destination.GameDetails.route -> true
+        else -> false
     }
 }
 

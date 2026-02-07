@@ -98,7 +98,6 @@ private fun GameInfoContent(
         return
     }
 
-    // Estado de error
     uiState.error?.let {
         Column(Modifier.fillMaxSize(), Arrangement.Center, Alignment.CenterHorizontally) {
             Text("Error: $it", color = MaterialTheme.colorScheme.error)
@@ -110,28 +109,27 @@ private fun GameInfoContent(
 
     val game = uiState.game ?: return
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Detalles del juego") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Atrás")
-                    }
-                }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+    ) {
+        // Botón de retroceso personalizado (opcional)
+        IconButton(
+            onClick = onBack,
+            modifier = Modifier
+                .padding(start = 16.dp, top = 16.dp)
+                .size(48.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = "Volver"
             )
         }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .verticalScroll(rememberScrollState())
-        ) {
-            TopGameInfo(game = game)
-            RatingRow(rating = game.rating ?: 0.0)
-            DescriptionRow(description = "Descripción del juego...") // O usar campo real si existe
-        }
+
+        TopGameInfo(game = game)
+        RatingRow(rating = game.rating ?: 0.0)
+        DescriptionRow(description = "Descripción del juego...")
     }
 }
 

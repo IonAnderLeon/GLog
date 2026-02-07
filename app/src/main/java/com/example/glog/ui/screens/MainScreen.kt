@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.example.glog.ui.navigation.AppBottomNavigationBar
+import com.example.glog.ui.navigation.BottomNavigationBar
 import com.example.glog.ui.navigation.AppNavHost
 import com.example.glog.ui.navigation.Destination
 import com.example.glog.ui.navigation.bottomNavItems
@@ -22,7 +22,8 @@ fun MainScreen() {
         when (currentRoute) {
             Destination.Home.route,
             Destination.Cluster.route,
-            Destination.Profile.route -> true
+            Destination.Profile.route,
+            Destination.GameDetails.route-> true
             else -> false
         }
     }
@@ -30,7 +31,7 @@ fun MainScreen() {
     Scaffold(
         bottomBar = {
             if (showBottomBar) {
-                AppBottomNavigationBar(
+                BottomNavigationBar(
                     navController = navController,
                     items = bottomNavItems
                 )
