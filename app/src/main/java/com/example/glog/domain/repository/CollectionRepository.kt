@@ -7,6 +7,6 @@ interface CollectionRepository {
     suspend fun getCollectionById(id: Long): Result<Collection>
     suspend fun createCollection(collection: Collection): Result<Collection>
     suspend fun deleteCollection(id: Long): Result<Collection>
-    suspend fun updateCollection(id: Long): Result<Collection>
+    suspend fun updateCollection(id: Long, collection: Collection): Result<Collection>
 
 }

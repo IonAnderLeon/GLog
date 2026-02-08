@@ -1,6 +1,5 @@
 package com.example.glog.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +34,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.example.glog.R
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.glog.domain.model.Register
@@ -139,21 +139,21 @@ private fun RegisterCard(
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Izquierda: thumbnail tipo portada (esquinas redondeadas)
             Box(
                 modifier = Modifier
                     .size(width = 48.dp, height = 64.dp)
                     .clip(RoundedCornerShape(8.dp))
             ) {
-                Image(
-                    painter = painterResource(R.drawable.riseoftheoverlords),
-                    contentDescription = null,
+                AsyncImage(
+                    model = register.gameImageUrl?.takeIf { it.isNotBlank() },
+                    contentDescription = register.gameName,
                     modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(R.drawable.placeholder),
+                    error = painterResource(R.drawable.placeholder)
                 )
             }
 
-            // Título del juego (pegado a la izquierda, letra más grande)
             Text(
                 text = register.gameName?.ifBlank { "Sin juego" } ?: "Sin juego",
                 modifier = Modifier
@@ -166,7 +166,6 @@ private fun RegisterCard(
                 overflow = TextOverflow.Ellipsis
             )
 
-            // Derecha: Tiempo de Juego y Fecha (más grande y con etiqueta)
             Column(
                 modifier = Modifier.fillMaxHeight(),
                 verticalArrangement = Arrangement.Center,

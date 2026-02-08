@@ -8,6 +8,8 @@ import kotlinx.serialization.Serializable
 data class RegisterDetailDTO(
     @SerialName("gameName")
     val gameName: String? = null,
+    @SerialName("gameImageUrl")
+    val gameImageUrl: String? = null,
     @SerialName("register")
     val register: RegisterDTO? = null,
     @SerialName("userName")

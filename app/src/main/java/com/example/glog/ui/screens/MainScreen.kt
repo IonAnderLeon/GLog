@@ -16,8 +16,7 @@ import com.example.glog.ui.navigation.currentRoute
 fun MainScreen() {
     val navController = rememberNavController()
     val currentRoute = currentRoute(navController)
-
-    // Determinar si mostrar bottom bar (solo en pantallas principales)
+    
     val showBottomBar = remember(currentRoute) {
         when (currentRoute) {
             Destination.Home.route,

@@ -5,5 +5,5 @@ data class Collection(
     val name: String,
     val description: String?,
     val gameIds: List<String> = emptyList(),
-    val games: List<Game> = emptyList()  // Opcional, si quieres datos completos
+    val games: List<Game> = emptyList()
 )

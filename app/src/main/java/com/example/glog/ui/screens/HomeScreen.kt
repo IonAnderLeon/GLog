@@ -63,8 +63,6 @@ import com.example.glog.ui.state.HomeUiState
 import com.example.glog.ui.viewmodels.HomeViewModel
 
 
-// ui/screen/home/HomeScreen.kt
-
 @Composable
 fun HomeScreen(
     navController: NavController,
@@ -98,7 +96,6 @@ private fun HomeContent(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        // Título
         Text(
             text = "Home",
             modifier = Modifier
@@ -108,7 +105,6 @@ private fun HomeContent(
             fontWeight = FontWeight.Bold
         )
 
-        // Error de red / API (ej. no llega el select)
         uiState.error?.let { errorMsg ->
             Text(
                 text = "Error: $errorMsg",
@@ -120,7 +116,6 @@ private fun HomeContent(
             )
         }
 
-        // Barra de búsqueda
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -147,12 +142,10 @@ private fun HomeContent(
             }
         }
 
-        // Lista de secciones
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Sección Recientes
             item {
                 GameSection(
                     title = "Recientes",
@@ -161,7 +154,6 @@ private fun HomeContent(
                 )
             }
 
-            // Sección Populares
             item {
                 GameSection(
                     title = "Populares",
@@ -169,8 +161,28 @@ private fun HomeContent(
                     onGameClick = onGameClick
                 )
             }
+            item {
+                GameSection(
+                    title = "Juegos de PC",
+                    games = uiState.popularGames,
+                    onGameClick = onGameClick
+                )
+            }
+            item {
+                GameSection(
+                    title = "Juegos de Switch",
+                    games = uiState.popularGames,
+                    onGameClick = onGameClick
+                )
+            }
+            item {
+                GameSection(
+                    title = "Juegos de Estrategia",
+                    games = uiState.popularGames,
+                    onGameClick = onGameClick
+                )
+            }
 
-            // Más secciones según necesites...
         }
     }
 }

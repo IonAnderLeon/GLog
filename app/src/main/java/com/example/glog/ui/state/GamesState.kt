@@ -2,8 +2,6 @@ package com.example.glog.ui.state
 
 import com.example.glog.domain.model.Game
 
-//Ejemplo
-
 data class GamesState(
     val games: List<Game> = emptyList(),
     val isLoading: Boolean = false,
