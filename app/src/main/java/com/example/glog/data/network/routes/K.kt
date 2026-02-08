@@ -22,4 +22,5 @@ object K {
     // Collections
     const val COLLECTIONS = "collections"
     const val COLLECTION_BY_ID = "collections/{id}"
+    const val COLLECTION_ADD_GAME = "collections/{id}/games"
 }

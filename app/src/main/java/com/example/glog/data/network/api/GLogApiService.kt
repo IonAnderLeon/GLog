@@ -1,5 +1,6 @@
 package com.example.glog.data.network.api
 
+import com.example.glog.data.network.dto.AddGameToCollectionDTO
 import com.example.glog.data.network.dto.CollectionDTO
 import com.example.glog.data.network.dto.CollectionGamesDTO
 import com.example.glog.data.network.dto.GameDTO
@@ -20,7 +21,6 @@ import retrofit2.http.Query
 interface GLogApiService {
 
     // 🎮 JUEGOS
-
     @GET(K.GAMES)
     suspend fun getAllGames(): List<GameDetailDTO>
 
@@ -108,5 +108,11 @@ interface GLogApiService {
 
     @DELETE(K.COLLECTION_BY_ID)
     suspend fun deleteCollection(@Path("id") id: Long): Response<Unit>
+
+    @POST(K.COLLECTION_ADD_GAME)
+    suspend fun addGameToCollection(
+        @Path("id") collectionId: Long,
+        @Body body: AddGameToCollectionDTO
+    ): Response<Unit>
 
 }

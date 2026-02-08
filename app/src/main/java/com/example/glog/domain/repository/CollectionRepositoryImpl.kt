@@ -2,6 +2,7 @@ package com.example.glog.domain.repository
 
 import com.example.glog.data.mapper.CollectionMapper
 import com.example.glog.data.network.api.GLogApiService
+import com.example.glog.data.network.dto.AddGameToCollectionDTO
 import com.example.glog.domain.model.Collection
 import javax.inject.Inject
 
@@ -73,6 +74,22 @@ class CollectionRepositoryImpl @Inject constructor(
             val response = apiService.deleteCollection(id)
             if (response.isSuccessful) {
                 Result.success(Collection(id = id.toInt(), name = "", description = null))
+            } else {
+                Result.failure(Exception("Error ${response.code()}: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun addGameToCollection(collectionId: Long, gameId: Int): Result<Unit> {
+        return try {
+            val response = apiService.addGameToCollection(
+                collectionId = collectionId,
+                body = AddGameToCollectionDTO(idGame = gameId)
+            )
+            if (response.isSuccessful) {
+                Result.success(Unit)
             } else {
                 Result.failure(Exception("Error ${response.code()}: ${response.message()}"))
             }

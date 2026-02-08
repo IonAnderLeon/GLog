@@ -23,6 +23,48 @@ class RegisterViewModel @Inject constructor(
         when (event) {
             is RegisterEvent.LoadRegisters -> loadRegisters()
             is RegisterEvent.SearchRegisters -> loadRegisters(event.query)
+            is RegisterEvent.CreateRegister -> createRegister(
+                date = event.date,
+                playtime = event.playtime,
+                gameId = event.gameId,
+                userId = event.userId
+            )
+        }
+    }
+
+    private fun createRegister(
+        date: String?,
+        playtime: Double?,
+        gameId: Int?,
+        userId: Int?
+    ) {
+        viewModelScope.launch {
+            _state.value = _state.value.copy(isLoading = true, error = null)
+            val newRegister = com.example.glog.domain.model.Register(
+                id = 0,
+                date = date,
+                playtime = playtime,
+                gameId = gameId,
+                gameName = null,
+                gameImageUrl = null,
+                userId = userId,
+                userName = null
+            )
+            registerRepository.createRegister(newRegister).fold(
+                onSuccess = { created ->
+                    _state.value = _state.value.copy(
+                        registers = _state.value.registers + created,
+                        isLoading = false,
+                        error = null
+                    )
+                },
+                onFailure = { error ->
+                    _state.value = _state.value.copy(
+                        error = error.message,
+                        isLoading = false
+                    )
+                }
+            )
         }
     }
 

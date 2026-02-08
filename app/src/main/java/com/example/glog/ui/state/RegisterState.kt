@@ -12,4 +12,10 @@ data class RegisterState(
 sealed class RegisterEvent {
     object LoadRegisters : RegisterEvent()
     data class SearchRegisters(val query: String?) : RegisterEvent()
+    data class CreateRegister(
+        val date: String? = null,
+        val playtime: Double? = null,
+        val gameId: Int? = null,
+        val userId: Int? = null
+    ) : RegisterEvent()
 }

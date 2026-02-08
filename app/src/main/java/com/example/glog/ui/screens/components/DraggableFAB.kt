@@ -29,7 +29,8 @@ data class FabPosition(
 @Composable
 fun DraggableFAB(
     position: FabPosition,
-    onPositionChange: (FabPosition) -> Unit
+    onPositionChange: (FabPosition) -> Unit,
+    onClick: () -> Unit = {}
 ) {
     val animatedX by animateDpAsState(
         targetValue = position.x,
@@ -50,7 +51,7 @@ fun DraggableFAB(
     )
 
     FloatingActionButton(
-        onClick = { },
+        onClick = onClick,
         containerColor = MaterialTheme.colorScheme.primary,
         contentColor = MaterialTheme.colorScheme.onPrimary,
         modifier = Modifier

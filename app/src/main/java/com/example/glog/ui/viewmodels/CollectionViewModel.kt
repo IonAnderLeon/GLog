@@ -25,6 +25,61 @@ class CollectionViewModel @Inject constructor(
             is CollectionEvent.SearchCollections -> loadCollections(event.query)
             is CollectionEvent.SelectCollection -> selectCollection(event.collection)
             is CollectionEvent.UpdateCollection -> updateCollection(event.collection)
+            is CollectionEvent.CreateCollection -> createCollection(event.name, event.description)
+            is CollectionEvent.AddGamesToCollection -> addGamesToCollection(event.collection, event.games)
+        }
+    }
+
+    private fun addGamesToCollection(collection: com.example.glog.domain.model.Collection, games: List<com.example.glog.domain.model.Game>) {
+        val newGames = games.filter { g -> !collection.games.any { it.id == g.id } }
+        if (newGames.isEmpty()) return
+        viewModelScope.launch {
+            _state.value = _state.value.copy(isLoading = true, error = null)
+            var allOk = true
+            for (game in newGames) {
+                collectionRepository.addGameToCollection(collection.id.toLong(), game.id).fold(
+                    onSuccess = { },
+                    onFailure = {
+                        _state.value = _state.value.copy(
+                            error = it.message,
+                            isLoading = false
+                        )
+                        allOk = false
+                        return@launch
+                    }
+                )
+            }
+            if (allOk) {
+                loadCollectionDetail(collection.id.toLong())
+            }
+        }
+    }
+
+    private fun createCollection(name: String, description: String?) {
+        viewModelScope.launch {
+            _state.value = _state.value.copy(isLoading = true, error = null)
+            val newCollection = com.example.glog.domain.model.Collection(
+                id = 0,
+                name = name,
+                description = description,
+                gameIds = emptyList(),
+                games = emptyList()
+            )
+            collectionRepository.createCollection(newCollection).fold(
+                onSuccess = { created ->
+                    _state.value = _state.value.copy(
+                        collections = _state.value.collections + created,
+                        isLoading = false,
+                        error = null
+                    )
+                },
+                onFailure = { error ->
+                    _state.value = _state.value.copy(
+                        error = error.message,
+                        isLoading = false
+                    )
+                }
+            )
         }
     }
 
