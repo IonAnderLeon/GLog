@@ -1,5 +1,7 @@
 package com.example.glog.ui.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -51,6 +53,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ClusterScreen(
     modifier: Modifier = Modifier,
@@ -263,6 +266,7 @@ private fun CreateCollectionDialog(
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun CreateRegisterDialog(
     onDismiss: () -> Unit,

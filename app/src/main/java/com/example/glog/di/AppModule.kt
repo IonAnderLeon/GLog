@@ -1,6 +1,8 @@
 package com.example.glog.di
 
+import com.example.glog.data.mapper.CollectionMapper
 import com.example.glog.data.mapper.GameMapper
+import com.example.glog.data.mapper.RegisterMapper
 import com.example.glog.data.mapper.UserMapper
 import com.example.glog.data.network.api.GLogApiService
 import com.example.glog.data.network.routes.K.BASE_URL
