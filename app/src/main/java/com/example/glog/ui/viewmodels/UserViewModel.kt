@@ -1,38 +1,38 @@
 package com.example.glog.ui.viewmodels
 
-
-
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.glog.domain.repository.GameRepository
+import com.example.glog.domain.repository.UserRepository
 
-import com.example.glog.ui.state.HomeUiState
-
+import com.example.glog.ui.state.GameInfoUiState
+import com.example.glog.ui.state.UserUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-//Ejemplo de viewmodel, cambiar después
-
 @HiltViewModel
-class HomeViewModel @Inject constructor(
-    private val gameRepository: GameRepository
+class UserViewModel @Inject constructor(
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(HomeUiState())
+    private val _uiState = MutableStateFlow(UserUiState())
     val uiState = _uiState.asStateFlow()
 
-    fun loadGames() {
+    fun loadUserData() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
 
-            gameRepository.getAllGames().fold(
-                onSuccess = { games ->
+            userRepository.getUsers().fold(
+                onSuccess = { users ->
+                    // Por ahora tomamos el primer usuario
+                    val user = users.firstOrNull()
                     _uiState.value = _uiState.value.copy(
-                        recentGames = games.take(10),
-                        popularGames = games.sortedByDescending { it.rating }.take(10),
+                        user = user,
                         isLoading = false
                     )
                 },
@@ -45,14 +45,12 @@ class HomeViewModel @Inject constructor(
             )
         }
     }
-
-    fun onSearchTextChange(text: String) {
-        _uiState.value = _uiState.value.copy(searchText = text)
-    }
-
-    fun onToggleSearch() {
-        _uiState.value = _uiState.value.copy(
-            showSearchBar = !_uiState.value.showSearchBar
-        )
-    }
 }
+
+
+
+data class UserStats(
+    val playTimeHours: Int = 42,
+    val distinctGames: Int = 15,
+    val favoritePlatform: String = "PC"
+)

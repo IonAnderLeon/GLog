@@ -7,7 +7,8 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class Destination(
-    val route: String
+    val route: String,
+    val hasBottomBar: Boolean = true
 ) {
     // Pantallas principales (con bottom bar)
     object Home : Destination("home")
@@ -15,8 +16,8 @@ sealed class Destination(
     object Profile : Destination("profile")
 
     // Pantallas secundarias (sin bottom bar)
-    object GameDetails : Destination("game/{id}") {
-        fun createRoute(id: String) = "game/$id"
+    object GameDetails : Destination("gameInfo/{id}", hasBottomBar = true) {
+        fun createRoute(id: String) = "gameInfo/$id"
     }
 
     object Settings : Destination("settings")

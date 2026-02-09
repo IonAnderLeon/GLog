@@ -59,6 +59,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.glog.domain.model.Game
+import com.example.glog.ui.navigation.Destination
 import com.example.glog.ui.state.HomeUiState
 import com.example.glog.ui.viewmodels.HomeViewModel
 
@@ -77,7 +78,7 @@ fun HomeScreen(
     HomeContent(
         uiState = uiState,
         onGameClick = { gameId ->
-            navController.navigate("gameInfo/$gameId")
+            navController.navigate(Destination.GameDetails.createRoute(gameId.toString()))
         },
         onSearchTextChange = viewModel::onSearchTextChange,
         onToggleSearch = viewModel::onToggleSearch
