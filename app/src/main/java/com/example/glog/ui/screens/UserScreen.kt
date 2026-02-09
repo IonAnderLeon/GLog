@@ -1,5 +1,7 @@
 package com.example.glog.ui.screens
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,9 +29,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,6 +43,7 @@ import coil.compose.AsyncImage
 import com.example.glog.R
 import com.example.glog.domain.model.Game
 import com.example.glog.domain.model.User
+import com.example.glog.ui.navigation.Destination
 import com.example.glog.ui.state.UserUiState
 import com.example.glog.ui.viewmodels.UserStats
 import com.example.glog.ui.viewmodels.UserViewModel
@@ -54,11 +59,14 @@ fun UserScreen(
         viewModel.loadUserData()
     }
 
-    UserContent(uiState = uiState)
+    UserContent(
+        uiState = uiState,
+        navController= navController
+    )
 }
 
 @Composable
-private fun UserContent(uiState: UserUiState) {
+private fun UserContent(uiState: UserUiState, navController: NavController) {
     when {
         uiState.isLoading -> {
             Box(
@@ -93,7 +101,13 @@ private fun UserContent(uiState: UserUiState) {
             ) {
                 item { UserHeader(user = user) }
                 item { DividerSection() }
-                item { FavoriteGamesSection(games = uiState.favoriteGames) }
+                item { FavoriteGamesSection(
+                    games = uiState.favoriteGames,
+                    onGameClick = { gameId ->
+                        navController.navigate(Destination.GameDetails.createRoute(gameId.toString()))
+                    }
+                )
+                }
                 item { DividerSection() }
                 item { StatsSection(stats = uiState.stats) }
             }
@@ -159,7 +173,10 @@ private fun DividerSection() {
 }
 
 @Composable
-private fun FavoriteGamesSection(games: List<Game>) {
+private fun FavoriteGamesSection(
+    games: List<Game>,
+    onGameClick: (Int) -> Unit  // Añade este parámetro
+) {
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -175,16 +192,47 @@ private fun FavoriteGamesSection(games: List<Game>) {
             contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
             items(games) { game ->
-                AsyncImage(
-                    model = game.imageUrl ?: "",
-                    contentDescription = "Favorite Game",
-                    modifier = Modifier.size(150.dp, 200.dp),
-                    contentScale = ContentScale.Crop,
-                    placeholder = painterResource(R.drawable.placeholder),
-                    error = painterResource(R.drawable.placeholder)
+                GameCard(
+                    game = game,
+                    onClick = { onGameClick(game.id) }  // Usa el callback
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun GameCard(
+    game: Game,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .size(150.dp, 200.dp)
+            .clickable(onClick = onClick)
+    ) {
+        AsyncImage(
+            model = game.imageUrl ?: "",
+            contentDescription = game.title,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop,
+            placeholder = painterResource(R.drawable.placeholder),
+            error = painterResource(R.drawable.placeholder)
+        )
+
+        Text(
+            text = game.title ?: "Sin título",
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .background(Color.Black.copy(alpha = 0.7f))
+                .fillMaxWidth()
+                .padding(4.dp),
+            color = Color.White,
+            fontSize = 12.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 

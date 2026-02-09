@@ -14,6 +14,7 @@ import com.example.glog.domain.repository.RegisterRepository
 import com.example.glog.domain.repository.RegisterRepositoryImpl
 import com.example.glog.domain.repository.UserRepository
 import com.example.glog.domain.repository.UserRepositoryImpl
+import com.example.glog.ui.usecase.GetFavoriteGamesUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -83,6 +84,14 @@ object AppModule {
         apiService: GLogApiService,
         mapper: UserMapper
     ): UserRepository = UserRepositoryImpl(apiService, mapper)
+
+    @Provides
+    fun provideGetFavoriteGamesUseCase(
+        collectionRepository: CollectionRepository
+    ): GetFavoriteGamesUseCase {
+        return GetFavoriteGamesUseCase(collectionRepository)
+    }
+
 
     @Provides
     fun provideRegisterMapper(): RegisterMapper = RegisterMapper()
