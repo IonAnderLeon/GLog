@@ -175,7 +175,7 @@ private fun DividerSection() {
 @Composable
 private fun FavoriteGamesSection(
     games: List<Game>,
-    onGameClick: (Int) -> Unit  // Añade este parámetro
+    onGameClick: (Int) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -264,11 +264,22 @@ private fun StatsSection(stats: UserStats) {
                 label = "Juegos distintos"
             )
 
-            StatItem(
-                value = stats.favoritePlatform,
-                label = "Plataforma fav"
-            )
         }
+
+        Column(modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center) {
+        StatItem(
+            value = stats.favoritePlatform,
+            label = "Plataforma fav"
+        )}
+        DividerSection()
+        Column(modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center) {
+            Text("Welcome Gamer!",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold)}
     }
 }
 
@@ -276,7 +287,7 @@ private fun StatsSection(stats: UserStats) {
 private fun StatItem(value: String, label: String) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.width(135.dp)
+        modifier = Modifier.width(200.dp)
     ) {
         Text(
             text = value,

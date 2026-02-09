@@ -16,9 +16,9 @@ class GameMapper {
             imageUrl = dto.game?.image.takeIf { !it.isNullOrBlank() },
             releaseYear = dto.game?.year,
             rating = dto.game?.rating ?: 0.0,
-            // Solo IDs como strings
             platformName = dto.platformName.formatEmpty("Plataforma desconocida"),
-            genreName = dto.genreName.formatEmpty("Género desconocido")
+            genreName = dto.genreName.formatEmpty("Género desconocido"),
+            description = dto.game?.description.takeIf { !it.isNullOrBlank() }
         )
     }
 
@@ -31,7 +31,8 @@ class GameMapper {
             releaseYear = dto.year,
             rating = dto.rating ?: 0.0,
             platformName = dto.platformId.formatPlatform(),
-            genreName = dto.genreId.formatGenre()
+            genreName = dto.genreId.formatGenre(),
+            description = dto.description.takeIf { !it.isNullOrBlank() }
         )
     }
 }

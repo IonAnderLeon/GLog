@@ -16,5 +16,7 @@ data class GameDTO(
     @SerializedName("rating")
     val rating: Double? = null,
     @SerializedName("year")
-    val year: Int? = null
+    val year: Int? = null,
+    @SerializedName("description")
+    val description: String? = null
 )

@@ -2,6 +2,7 @@ package com.example.glog.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.glog.domain.model.Game
 import com.example.glog.domain.repository.RegisterRepository
 import com.example.glog.domain.repository.UserRepository
 import com.example.glog.ui.state.UserUiState
@@ -43,7 +44,9 @@ class UserViewModel @Inject constructor(
                 else -> {
                     val user = userResult.getOrNull()?.firstOrNull()
                     val favoriteGames = favoritesResult.getOrNull() ?: emptyList()
-                    val stats = if (user != null) loadStatsForUser(user.id.toLong()) else UserStats()
+                    val statsFromRegisters = if (user != null) loadStatsForUser(user.id.toLong()) else UserStats()
+                    val favoritePlatform = mostFrequentPlatformFromGames(favoriteGames)
+                    val stats = statsFromRegisters.copy(favoritePlatform = favoritePlatform)
 
                     _uiState.value = _uiState.value.copy(
                         user = user,
@@ -65,11 +68,23 @@ class UserViewModel @Inject constructor(
                 UserStats(
                     playTimeHours = totalHours,
                     distinctGames = distinctGames,
-                    favoritePlatform = "PC"
+                    favoritePlatform = "" // Se sobrescribe con la de favoritos
                 )
             },
             onFailure = { UserStats() }
         )
+    }
+
+    /**
+     * De la fila de favoritos (row 1), obtiene la plataforma que más se repite entre los juegos.
+     */
+    private fun mostFrequentPlatformFromGames(games: List<Game>): String {
+        if (games.isEmpty()) return "—"
+        val platformCounts = games
+            .map { it.platformName?.takeIf { n -> n.isNotBlank() } ?: "Desconocida" }
+            .groupingBy { it }
+            .eachCount()
+        return platformCounts.maxByOrNull { it.value }?.key ?: "—"
     }
 }
 
