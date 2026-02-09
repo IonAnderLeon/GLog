@@ -1,7 +1,7 @@
 package com.example.glog.data.network.routes
 
 object K {
-    const val BASE_URL = "http://10.0.2.2:8080/api/"
+    const val BASE_URL = "http://172.20.10.9:8080/api/"
 
     // Query param (común para todos)
     const val QUERY_SEARCH = "busqueda"
@@ -22,4 +22,5 @@ object K {
     // Collections
     const val COLLECTIONS = "collections"
     const val COLLECTION_BY_ID = "collections/{id}"
+    const val COLLECTION_ADD_GAME = "collections/{id}/games"
 }

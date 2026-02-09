@@ -3,7 +3,6 @@ package com.example.glog.data.mapper
 import com.example.glog.data.network.dto.RegisterDTO
 import com.example.glog.data.network.dto.RegisterDetailDTO
 import com.example.glog.domain.model.Register
-import java.time.LocalDate
 
 class RegisterMapper {
     fun toEntity(detailDto: RegisterDetailDTO): Register {
@@ -13,6 +12,7 @@ class RegisterMapper {
             playtime = detailDto.register?.playtime ?: 0.0,
             gameId = detailDto.register?.idGame ?: 0,
             gameName = detailDto.gameName ?: "",
+            gameImageUrl = detailDto.gameImageUrl?.takeIf { it.isNotBlank() },
             userId = detailDto.register?.idUsuario ?: 0,
             userName = detailDto.userName ?: ""
         )

@@ -1,15 +1,12 @@
 package com.example.glog.domain.model
 
-import java.util.Date
-
-//Preguntar si sería posible el date
-
 data class Register(
     val id: Int,
-    val date: String?,  // O LocalDate si prefieres
+    val date: String?,
     val playtime: Double?,
     val gameId: Int?,
-    val gameName: String?,  // Del DetailDTO
+    val gameName: String?,
+    val gameImageUrl: String? = null,
     val userId: Int?,
-    val userName: String?   // Del DetailDTO
+    val userName: String?
 )

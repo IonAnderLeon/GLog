@@ -4,8 +4,12 @@ import com.example.glog.data.mapper.GameMapper
 import com.example.glog.data.mapper.UserMapper
 import com.example.glog.data.network.api.GLogApiService
 import com.example.glog.data.network.routes.K.BASE_URL
+import com.example.glog.domain.repository.CollectionRepository
+import com.example.glog.domain.repository.CollectionRepositoryImpl
 import com.example.glog.domain.repository.GameRepository
 import com.example.glog.domain.repository.GameRepositoryImpl
+import com.example.glog.domain.repository.RegisterRepository
+import com.example.glog.domain.repository.RegisterRepositoryImpl
 import com.example.glog.domain.repository.UserRepository
 import com.example.glog.domain.repository.UserRepositoryImpl
 import dagger.Module
@@ -78,6 +82,26 @@ object AppModule {
         mapper: UserMapper
     ): UserRepository = UserRepositoryImpl(apiService, mapper)
 
+    @Provides
+    fun provideRegisterMapper(): RegisterMapper = RegisterMapper()
 
+    @Provides
+    fun provideRegisterRepository(
+        apiService: GLogApiService,
+        registerMapper: RegisterMapper
+    ): RegisterRepository {
+        return RegisterRepositoryImpl(apiService, registerMapper)
+    }
 
+    @Provides
+    fun provideCollectionMapper(gameMapper: GameMapper): CollectionMapper =
+        CollectionMapper(gameMapper)
+
+    @Provides
+    fun provideCollectionRepository(
+        apiService: GLogApiService,
+        collectionMapper: CollectionMapper
+    ): CollectionRepository {
+        return CollectionRepositoryImpl(apiService, collectionMapper)
+    }
 }

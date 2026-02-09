@@ -1,5 +1,6 @@
 package com.example.glog.data.network.api
 
+import com.example.glog.data.network.dto.AddGameToCollectionDTO
 import com.example.glog.data.network.dto.CollectionDTO
 import com.example.glog.data.network.dto.CollectionGamesDTO
 import com.example.glog.data.network.dto.GameDTO
@@ -8,10 +9,6 @@ import com.example.glog.data.network.dto.RegisterDTO
 import com.example.glog.data.network.dto.RegisterDetailDTO
 import com.example.glog.data.network.dto.UserDTO
 import com.example.glog.data.network.routes.K
-import com.example.glog.domain.model.Game
-import com.example.glog.domain.model.Genre
-import com.example.glog.domain.model.Platform
-import com.example.glog.domain.model.Register
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -24,7 +21,6 @@ import retrofit2.http.Query
 interface GLogApiService {
 
     // 🎮 JUEGOS
-
     @GET(K.GAMES)
     suspend fun getAllGames(): List<GameDetailDTO>
 
@@ -96,7 +92,7 @@ interface GLogApiService {
     @GET(K.COLLECTIONS)
     suspend fun getCollections(
         @Query(K.QUERY_SEARCH) search: String? = null
-    ): List<CollectionGamesDTO>  // ¡OJO! Debe ser DetailDTO
+    ): List<CollectionGamesDTO>
 
     @GET(K.COLLECTION_BY_ID)
     suspend fun getCollectionById(@Path("id") id: Long): CollectionGamesDTO
@@ -112,5 +108,11 @@ interface GLogApiService {
 
     @DELETE(K.COLLECTION_BY_ID)
     suspend fun deleteCollection(@Path("id") id: Long): Response<Unit>
+
+    @POST(K.COLLECTION_ADD_GAME)
+    suspend fun addGameToCollection(
+        @Path("id") collectionId: Long,
+        @Body body: AddGameToCollectionDTO
+    ): Response<Unit>
 
 }
