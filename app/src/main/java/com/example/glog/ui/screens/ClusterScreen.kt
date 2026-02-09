@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.glog.ui.screens.components.DraggableFAB
 import com.example.glog.ui.screens.components.FabPosition
 import com.example.glog.ui.state.CollectionEvent
@@ -57,6 +58,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun ClusterScreen(
     modifier: Modifier = Modifier,
+    navController: NavController? = null,
     collectionViewModel: CollectionViewModel = hiltViewModel(),
     registerViewModel: RegisterViewModel = hiltViewModel(),
     gameSearchViewModel: GameSearchViewModel = hiltViewModel()
@@ -161,7 +163,10 @@ fun ClusterScreen(
                 modifier = Modifier.fillMaxSize()
             ) { page: Int ->
                 when (page) {
-                    0 -> Collection(modifier = Modifier.fillMaxSize())
+                    0 -> Collection(
+                        modifier = Modifier.fillMaxSize(),
+                        navController = navController
+                    )
                     1 -> RegisterScreen(modifier = Modifier.fillMaxSize())
                 }
             }
