@@ -2,7 +2,6 @@ package com.example.glog.data.network.routes
 
 object K {
     const val BASE_URL = "http://172.20.10.3:8080/api/"
-
     // Query param (común para todos)
     const val QUERY_SEARCH = "busqueda"
 
