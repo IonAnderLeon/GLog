@@ -18,4 +18,6 @@ sealed class CollectionEvent {
     data class UpdateCollection(val collection: Collection) : CollectionEvent()
     data class CreateCollection(val name: String, val description: String? = null) : CollectionEvent()
     data class AddGamesToCollection(val collection: Collection, val games: List<Game>) : CollectionEvent()
+    data class DeleteCollection(val collection: Collection) : CollectionEvent()
+
 }

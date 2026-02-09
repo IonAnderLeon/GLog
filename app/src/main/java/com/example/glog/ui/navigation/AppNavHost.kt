@@ -32,7 +32,7 @@ fun AppNavHost(
 
         // Pantalla Cluster
         composable(Destination.Cluster.route) {
-            ClusterScreen()
+            ClusterScreen(navController = navController)
         }
 
         // Pantalla Profile

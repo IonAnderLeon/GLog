@@ -27,6 +27,30 @@ class CollectionViewModel @Inject constructor(
             is CollectionEvent.UpdateCollection -> updateCollection(event.collection)
             is CollectionEvent.CreateCollection -> createCollection(event.name, event.description)
             is CollectionEvent.AddGamesToCollection -> addGamesToCollection(event.collection, event.games)
+            is CollectionEvent.DeleteCollection -> deleteCollection(event.collection)
+        }
+    }
+
+    private fun deleteCollection(collection: com.example.glog.domain.model.Collection) {
+        viewModelScope.launch {
+            _state.value = _state.value.copy(isLoading = true, error = null)
+            collectionRepository.deleteCollection(collection.id.toLong()).fold(
+                onSuccess = {
+                    val newCollections = _state.value.collections.filter { it.id != collection.id }
+                    _state.value = _state.value.copy(
+                        collections = newCollections,
+                        selectedCollection = if (_state.value.selectedCollection?.id == collection.id) null else _state.value.selectedCollection,
+                        isLoading = false,
+                        error = null
+                    )
+                },
+                onFailure = { error ->
+                    _state.value = _state.value.copy(
+                        error = error.message,
+                        isLoading = false
+                    )
+                }
+            )
         }
     }
 

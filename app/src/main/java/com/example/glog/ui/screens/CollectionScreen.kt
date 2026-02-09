@@ -27,6 +27,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -58,10 +59,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.glog.R
 import com.example.glog.domain.model.Collection
 import com.example.glog.domain.model.Game
+import com.example.glog.ui.navigation.Destination
 import com.example.glog.ui.state.CollectionEvent
 import com.example.glog.ui.state.CollectionState
 import com.example.glog.ui.viewmodels.CollectionViewModel
@@ -70,6 +73,7 @@ import com.example.glog.ui.viewmodels.GameSearchViewModel
 @Composable
 fun Collection(
     modifier: Modifier = Modifier,
+    navController: NavController? = null,
     viewModel: CollectionViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -84,6 +88,10 @@ fun Collection(
             collection = state.selectedCollection!!,
             onBack = { viewModel.onEvent(CollectionEvent.SelectCollection(null)) },
             onUpdateCollection = { viewModel.onEvent(CollectionEvent.UpdateCollection(it)) },
+            onDeleteCollection = { viewModel.onEvent(CollectionEvent.DeleteCollection(state.selectedCollection!!)) },
+            onGameClick = { gameId ->
+                navController?.navigate(Destination.GameDetails.createRoute(gameId.toString()))
+            },
             onAddGames = { games ->
                 viewModel.onEvent(CollectionEvent.AddGamesToCollection(state.selectedCollection!!, games))
             },
@@ -107,15 +115,6 @@ private fun CollectionListContent(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        Text(
-            text = "Collections",
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
-        )
-
         state.error?.let { errorMsg ->
             Text(
                 text = "Error: $errorMsg",
@@ -210,12 +209,15 @@ private fun CollectionInfoScreen(
     collection: Collection,
     onBack: () -> Unit,
     onUpdateCollection: (Collection) -> Unit,
+    onDeleteCollection: () -> Unit,
+    onGameClick: (Int) -> Unit,
     onAddGames: (List<Game>) -> Unit,
     gameSearchViewModel: GameSearchViewModel
 ) {
     var isEditingName by remember(collection.id) { mutableStateOf(false) }
     var editedName by remember(collection.id) { mutableStateOf(collection.name) }
     var showAddGameDialog by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(collection) {
         editedName = collection.name
@@ -275,7 +277,37 @@ private fun CollectionInfoScreen(
                         contentDescription = "Editar nombre"
                     )
                 }
+                IconButton(onClick = { showDeleteDialog = true }) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Eliminar colección",
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                }
             }
+        }
+
+        if (showDeleteDialog) {
+            AlertDialog(
+                onDismissRequest = { showDeleteDialog = false },
+                title = { Text("Eliminar colección") },
+                text = { Text("¿Eliminar \"${collection.name.ifBlank { "Colección" }}\"? Esta acción no se puede deshacer.") },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            showDeleteDialog = false
+                            onDeleteCollection()
+                        }
+                    ) {
+                        Text("Eliminar", color = MaterialTheme.colorScheme.error)
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDeleteDialog = false }) {
+                        Text("Cancelar")
+                    }
+                }
+            )
         }
 
         collection.description?.takeIf { it.isNotBlank() }?.let { desc ->
@@ -309,8 +341,11 @@ private fun CollectionInfoScreen(
                 AddGameCard(onClick = { showAddGameDialog = true })
             }
             items(collection.games) { game: Game ->
-                    GameInCollectionCard(game = game)
-                }
+                GameInCollectionCard(
+                    game = game,
+                    onClick = { onGameClick(game.id) }
+                )
+            }
         }
     }
 
@@ -457,12 +492,14 @@ private fun AddGameToCollectionDialog(
 @Composable
 private fun GameInCollectionCard(
     game: Game,
+    onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
             .aspectRatio(150f / 200f)
+            .clickable(onClick = onClick)
     ) {
         AsyncImage(
             model = game.imageUrl?.takeIf { it.isNotBlank() },
