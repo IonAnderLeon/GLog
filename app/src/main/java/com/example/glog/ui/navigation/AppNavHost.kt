@@ -37,7 +37,7 @@ fun AppNavHost(
 
         // Pantalla Profile
         composable(Destination.Profile.route) {
-            UserScreen()
+            UserScreen(navController = navController)
         }
 
         // Pantalla de detalles (secundaria)

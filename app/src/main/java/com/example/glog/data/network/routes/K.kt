@@ -11,15 +11,15 @@ object K {
     const val GAME_BY_ID = "games/{id}"
 
     // Users
-    const val USERS = "/users"
-    const val USER_BY_ID = "/users/{id}"
+    const val USERS = "users"
+    const val USER_BY_ID = "users/{id}"
 
     // Registers
-    const val REGISTERS = "/registers"
-    const val REGISTERS_BY_ID = "/registers/{id}"
-    const val REGISTERS_BY_USER = "/registers/user/{userId}"
+    const val REGISTERS = "registers"
+    const val REGISTERS_BY_ID = "registers/{id}"
+    const val REGISTERS_BY_USER = "registers/user/{userId}"
 
     // Collections
-    const val COLLECTIONS = "/collections"
-    const val COLLECTION_BY_ID = "/collections/{id}"
+    const val COLLECTIONS = "collections"
+    const val COLLECTION_BY_ID = "collections/{id}"
 }
