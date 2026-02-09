@@ -42,6 +42,10 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import kotlin.math.roundToInt
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -61,33 +65,48 @@ import coil.compose.AsyncImage
 import com.example.glog.domain.model.Game
 import com.example.glog.ui.navigation.Destination
 import com.example.glog.ui.state.HomeUiState
+import com.example.glog.ui.viewmodels.GameSearchViewModel
 import com.example.glog.ui.viewmodels.HomeViewModel
 
 
 @Composable
 fun HomeScreen(
     navController: NavController,
-    viewModel: HomeViewModel = hiltViewModel()
+    homeViewModel: HomeViewModel = hiltViewModel(),
+    searchViewModel: GameSearchViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val homeState by homeViewModel.uiState.collectAsStateWithLifecycle()
+    val searchResults by searchViewModel.searchResults.collectAsStateWithLifecycle()
+    val isSearching by searchViewModel.isSearching.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.loadGames()
+        homeViewModel.loadGames()
     }
 
     HomeContent(
-        uiState = uiState,
+        homeState = homeState,
+        searchResults = searchResults,
+        isSearching = isSearching,
         onGameClick = { gameId ->
             navController.navigate(Destination.GameDetails.createRoute(gameId.toString()))
         },
-        onSearchTextChange = viewModel::onSearchTextChange,
-        onToggleSearch = viewModel::onToggleSearch
+        onSearchTextChange = { query ->
+            homeViewModel.onSearchTextChange(query)
+            searchViewModel.searchGames(query)
+        },
+        onToggleSearch = {
+            homeViewModel.onToggleSearch()
+            if (!homeState.showSearchBar) {
+                searchViewModel.clearSearch()
+            }
+        }
     )
 }
-
 @Composable
 private fun HomeContent(
-    uiState: HomeUiState,
+    homeState: HomeUiState,
+    searchResults: List<Game>,
+    isSearching: Boolean,
     onGameClick: (Int) -> Unit,
     onSearchTextChange: (String) -> Unit,
     onToggleSearch: () -> Unit
@@ -106,7 +125,7 @@ private fun HomeContent(
             fontWeight = FontWeight.Bold
         )
 
-        uiState.error?.let { errorMsg ->
+        homeState.error?.let { errorMsg ->
             Text(
                 text = "Error: $errorMsg",
                 color = MaterialTheme.colorScheme.error,
@@ -124,12 +143,17 @@ private fun HomeContent(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (uiState.showSearchBar) {
+            if (homeState.showSearchBar) {
                 OutlinedTextField(
-                    value = uiState.searchText,
+                    value = homeState.searchText,
                     onValueChange = onSearchTextChange,
                     modifier = Modifier.weight(1f),
-                    placeholder = { Text("Buscar...") }
+                    placeholder = { Text("Buscar...") },
+                    trailingIcon = {
+                        if (isSearching) {
+                            CircularProgressIndicator(modifier = Modifier.size(20.dp))
+                        }
+                    }
                 )
             } else {
                 Spacer(modifier = Modifier.weight(1f))
@@ -137,56 +161,164 @@ private fun HomeContent(
 
             IconButton(onClick = onToggleSearch) {
                 Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "Buscar"
+                    imageVector = if (homeState.showSearchBar) Icons.Default.Close else Icons.Default.Search,
+                    contentDescription = if (homeState.showSearchBar) "Cerrar búsqueda" else "Buscar"
                 )
             }
         }
 
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            item {
-                GameSection(
-                    title = "Recientes",
-                    games = uiState.recentGames,
-                    onGameClick = onGameClick
-                )
-            }
-
-            item {
-                GameSection(
-                    title = "Populares",
-                    games = uiState.popularGames,
-                    onGameClick = onGameClick
-                )
-            }
-            item {
-                GameSection(
-                    title = "Juegos de PC",
-                    games = uiState.popularGames,
-                    onGameClick = onGameClick
-                )
-            }
-            item {
-                GameSection(
-                    title = "Juegos de Switch",
-                    games = uiState.popularGames,
-                    onGameClick = onGameClick
-                )
-            }
-            item {
-                GameSection(
-                    title = "Juegos de Estrategia",
-                    games = uiState.popularGames,
-                    onGameClick = onGameClick
-                )
-            }
-
+        // Mostrar resultados de búsqueda si hay texto
+        if (homeState.showSearchBar && homeState.searchText.isNotBlank()) {
+            SearchResultsContent(
+                searchResults = searchResults,
+                isSearching = isSearching,
+                onGameClick = onGameClick
+            )
+        } else {
+            // Mostrar secciones normales
+            HomeSectionsContent(
+                homeState = homeState,
+                onGameClick = onGameClick
+            )
         }
     }
 }
+
+@Composable
+private fun SearchResultsContent(
+    searchResults: List<Game>,
+    isSearching: Boolean,
+    onGameClick: (Int) -> Unit
+) {
+    when {
+        isSearching -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        }
+
+        searchResults.isEmpty() -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text("No se encontraron juegos")
+            }
+        }
+
+        else -> {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+            ) {
+                items(searchResults) { game ->
+                    SearchResultItem(
+                        game = game,
+                        onClick = { onGameClick(game.id) }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SearchResultItem(
+    game: Game,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AsyncImage(
+                model = game.imageUrl,
+                contentDescription = game.title,
+                modifier = Modifier
+                    .size(80.dp)
+                    .clip(RoundedCornerShape(8.dp)),
+                contentScale = ContentScale.Crop
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = game.title ?: "Sin título",
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "${game.platformName ?: ""} • ${game.genreName ?: ""}",
+                    fontSize = 12.sp,
+                    color = Color.Gray
+                )
+                Text(
+                    text = "Año: ${game.releaseYear ?: "N/A"} • Rating: ${game.rating ?: "N/A"}",
+                    fontSize = 12.sp,
+                    color = Color.Gray
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun HomeSectionsContent(
+    homeState: HomeUiState,
+    onGameClick: (Int) -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        item {
+            GameSection(
+                title = "Recientes",
+                games = homeState.recentGames,
+                onGameClick = onGameClick
+            )
+        }
+
+        item {
+            GameSection(
+                title = "Populares",
+                games = homeState.popularGames,
+                onGameClick = onGameClick
+            )
+        }
+
+        item {
+            GameSection(
+                title = "Juegos de PC",
+                games = homeState.popularGames,
+                onGameClick = onGameClick
+            )
+        }
+        item {
+            GameSection(
+                title = "Juegos de Switch",
+                games = homeState.popularGames,
+                onGameClick = onGameClick
+            )
+        }
+        item {
+            GameSection(
+                title = "Juegos de Estrategia",
+                games = homeState.popularGames,
+                onGameClick = onGameClick
+            )
+        }
+
+
+        // Añade más secciones según necesites
+    }
+}
+
+
 
 @Composable
 private fun GameSection(
