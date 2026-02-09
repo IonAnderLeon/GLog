@@ -210,13 +210,15 @@ fun ClusterScreen(
                 showCreateRegisterDialog = false
             },
             gameSearchViewModel = gameSearchViewModel,
-            onCreate = { date, playtime, gameId ->
+            onCreate = { date, playtime, gameId, gameName, gameImageUrl ->
                 registerViewModel.onEvent(
                     RegisterEvent.CreateRegister(
                         date = date,
                         playtime = playtime,
                         gameId = gameId,
-                        userId = 1
+                        userId = 1,
+                        gameName = gameName,
+                        gameImageUrl = gameImageUrl
                     )
                 )
                 gameSearchViewModel.clearSearch()
@@ -276,7 +278,7 @@ private fun CreateCollectionDialog(
 private fun CreateRegisterDialog(
     onDismiss: () -> Unit,
     gameSearchViewModel: GameSearchViewModel,
-    onCreate: (date: String?, playtime: Double?, gameId: Int?) -> Unit
+    onCreate: (date: String?, playtime: Double?, gameId: Int?, gameName: String?, gameImageUrl: String?) -> Unit
 ) {
     val today = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
     var date by remember { mutableStateOf(today) }
@@ -370,10 +372,14 @@ private fun CreateRegisterDialog(
                 onClick = {
                     val playtime = playtimeStr.toDoubleOrNull()
                     val gameId = selectedGame?.id
+                    val gameName = selectedGame?.title
+                    val gameImageUrl = selectedGame?.imageUrl
                     onCreate(
                         date.ifBlank { null },
                         playtime,
-                        gameId
+                        gameId,
+                        gameName,
+                        gameImageUrl
                     )
                 }
             ) {

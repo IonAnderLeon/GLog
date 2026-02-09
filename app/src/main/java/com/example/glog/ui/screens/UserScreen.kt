@@ -181,7 +181,7 @@ private fun FavoriteGamesSection(
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = "Fav Collection",
+            text = "Favoritos",
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
@@ -256,7 +256,7 @@ private fun StatsSection(stats: UserStats) {
         ) {
             StatItem(
                 value = "${stats.playTimeHours}h",
-                label = "Últimas 2 semanas"
+                label = "Horas totales"
             )
 
             StatItem(

@@ -1,13 +1,9 @@
 package com.example.glog.ui.viewmodels
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.glog.domain.repository.RegisterRepository
 import com.example.glog.domain.repository.UserRepository
-
-import com.example.glog.ui.state.GameInfoUiState
 import com.example.glog.ui.state.UserUiState
 import com.example.glog.ui.usecase.GetFavoriteGamesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class UserViewModel @Inject constructor(
     private val userRepository: UserRepository,
+    private val registerRepository: RegisterRepository,
     private val getFavoriteGamesUseCase: GetFavoriteGamesUseCase
 ) : ViewModel() {
 
@@ -28,48 +25,51 @@ class UserViewModel @Inject constructor(
 
     fun loadUserData() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
 
-            // Cargar usuario y favoritos en paralelo
             val userDeferred = async { userRepository.getUsers() }
             val favoritesDeferred = async { getFavoriteGamesUseCase() }
 
             val userResult = userDeferred.await()
             val favoritesResult = favoritesDeferred.await()
 
-            // Combinar resultados
             when {
                 userResult.isFailure -> {
-                    // Error al cargar usuario
                     _uiState.value = _uiState.value.copy(
                         error = userResult.exceptionOrNull()?.message ?: "Error al cargar usuario",
                         isLoading = false
                     )
                 }
-                favoritesResult.isFailure -> {
-                    // Usuario OK, pero error en favoritos
-                    val user = userResult.getOrNull()?.firstOrNull()
-                    _uiState.value = _uiState.value.copy(
-                        user = user,
-                        favoriteGames = emptyList(),
-                        error = "No se pudieron cargar los juegos favoritos",
-                        isLoading = false
-                    )
-                }
                 else -> {
-                    // Ambos OK
                     val user = userResult.getOrNull()?.firstOrNull()
                     val favoriteGames = favoritesResult.getOrNull() ?: emptyList()
+                    val stats = if (user != null) loadStatsForUser(user.id.toLong()) else UserStats()
 
                     _uiState.value = _uiState.value.copy(
                         user = user,
                         favoriteGames = favoriteGames,
+                        stats = stats,
                         isLoading = false,
-                        error = null
+                        error = if (favoritesResult.isFailure) "No se pudieron cargar los juegos favoritos" else null
                     )
                 }
             }
         }
+    }
+
+    private suspend fun loadStatsForUser(userId: Long): UserStats {
+        return registerRepository.getRegistersByUser(userId).fold(
+            onSuccess = { registers ->
+                val totalHours = registers.sumOf { it.playtime ?: 0.0 }.toInt()
+                val distinctGames = registers.mapNotNull { it.gameId }.toSet().size
+                UserStats(
+                    playTimeHours = totalHours,
+                    distinctGames = distinctGames,
+                    favoritePlatform = "PC"
+                )
+            },
+            onFailure = { UserStats() }
+        )
     }
 }
 

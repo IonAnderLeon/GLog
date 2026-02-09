@@ -16,6 +16,8 @@ sealed class RegisterEvent {
         val date: String? = null,
         val playtime: Double? = null,
         val gameId: Int? = null,
-        val userId: Int? = null
+        val userId: Int? = null,
+        val gameName: String? = null,
+        val gameImageUrl: String? = null
     ) : RegisterEvent()
 }

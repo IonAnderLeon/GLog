@@ -27,7 +27,9 @@ class RegisterViewModel @Inject constructor(
                 date = event.date,
                 playtime = event.playtime,
                 gameId = event.gameId,
-                userId = event.userId
+                userId = event.userId,
+                gameName = event.gameName,
+                gameImageUrl = event.gameImageUrl
             )
         }
     }
@@ -36,7 +38,9 @@ class RegisterViewModel @Inject constructor(
         date: String?,
         playtime: Double?,
         gameId: Int?,
-        userId: Int?
+        userId: Int?,
+        gameName: String? = null,
+        gameImageUrl: String? = null
     ) {
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true, error = null)
@@ -45,15 +49,15 @@ class RegisterViewModel @Inject constructor(
                 date = date,
                 playtime = playtime,
                 gameId = gameId,
-                gameName = null,
-                gameImageUrl = null,
+                gameName = gameName?.takeIf { it.isNotBlank() },
+                gameImageUrl = gameImageUrl?.takeIf { it.isNotBlank() },
                 userId = userId,
                 userName = null
             )
             registerRepository.createRegister(newRegister).fold(
                 onSuccess = { created ->
                     _state.value = _state.value.copy(
-                        registers = _state.value.registers + created,
+                        registers = listOf(created) + _state.value.registers,
                         isLoading = false,
                         error = null
                     )
