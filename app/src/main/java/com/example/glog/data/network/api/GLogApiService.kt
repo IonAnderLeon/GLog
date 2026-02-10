@@ -115,4 +115,10 @@ interface GLogApiService {
         @Body body: AddGameToCollectionDTO
     ): Response<Unit>
 
+    @DELETE(K.COLLECTION_REMOVE_GAME)
+    suspend fun removeGameFromCollection(
+        @Path("collectionId") collectionId: Long,
+        @Path("gameId") gameId: Int
+    ): Response<Unit>
+
 }

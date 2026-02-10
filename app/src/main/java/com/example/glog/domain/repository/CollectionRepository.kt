@@ -9,4 +9,5 @@ interface CollectionRepository {
     suspend fun deleteCollection(id: Long): Result<Collection>
     suspend fun updateCollection(id: Long, collection: Collection): Result<Collection>
     suspend fun addGameToCollection(collectionId: Long, gameId: Int): Result<Unit>
+    suspend fun removeGameFromCollection(collectionId: Long, gameId: Int): Result<Unit>
 }

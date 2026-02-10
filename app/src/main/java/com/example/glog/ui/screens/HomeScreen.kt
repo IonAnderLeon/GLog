@@ -294,27 +294,18 @@ private fun HomeSectionsContent(
         item {
             GameSection(
                 title = "Juegos de PC",
-                games = homeState.popularGames,
-                onGameClick = onGameClick
-            )
-        }
-        item {
-            GameSection(
-                title = "Juegos de Switch",
-                games = homeState.popularGames,
-                onGameClick = onGameClick
-            )
-        }
-        item {
-            GameSection(
-                title = "Juegos de Estrategia",
-                games = homeState.popularGames,
+                games = homeState.pcGames,
                 onGameClick = onGameClick
             )
         }
 
-
-        // Añade más secciones según necesites
+        item {
+            GameSection(
+                title = "Juegos de género Aventura",
+                games = homeState.adventureGames,
+                onGameClick = onGameClick
+            )
+        }
     }
 }
 

@@ -1,6 +1,9 @@
 package com.example.glog.di
 
+import android.content.Context
 import com.example.glog.data.mapper.CollectionMapper
+import com.example.glog.data.preferences.AppPreferencesDataSource
+import dagger.hilt.android.qualifiers.ApplicationContext
 import com.example.glog.data.mapper.GameMapper
 import com.example.glog.data.mapper.RegisterMapper
 import com.example.glog.data.mapper.UserMapper
@@ -115,4 +118,10 @@ object AppModule {
     ): CollectionRepository {
         return CollectionRepositoryImpl(apiService, collectionMapper)
     }
+
+    @Provides
+    @Singleton
+    fun provideAppPreferencesDataSource(
+        @ApplicationContext context: Context
+    ): AppPreferencesDataSource = AppPreferencesDataSource(context)
 }

@@ -8,5 +8,7 @@ data class HomeUiState(
     val showSearchBar: Boolean = false,
     val recentGames: List<Game> = emptyList(),
     val popularGames: List<Game> = emptyList(),
+    val pcGames: List<Game> = emptyList(),
+    val adventureGames: List<Game> = emptyList(),
     val error: String? = null
 )

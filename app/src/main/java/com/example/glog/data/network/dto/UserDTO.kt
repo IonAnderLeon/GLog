@@ -12,4 +12,12 @@ data class UserDTO(
     val image: String? = null,
     @SerialName("nickname")
     val nickname: String? = null
-)
+) {
+    companion object {
+        fun forUpdate(id: Int, nickname: String?, image: String?) = UserDTO(
+            idUser = id,
+            image = image,
+            nickname = nickname
+        )
+    }
+}

@@ -2,6 +2,7 @@ package com.example.glog.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,14 +19,21 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,17 +51,23 @@ import coil.compose.AsyncImage
 import com.example.glog.R
 import com.example.glog.domain.model.Game
 import com.example.glog.domain.model.User
+import com.example.glog.data.preferences.AppPreferences
 import com.example.glog.ui.navigation.Destination
 import com.example.glog.ui.state.UserUiState
+import com.example.glog.ui.viewmodels.AppPreferencesViewModel
 import com.example.glog.ui.viewmodels.UserStats
 import com.example.glog.ui.viewmodels.UserViewModel
 
 @Composable
 fun UserScreen(
     navController: NavController,
-    viewModel: UserViewModel = hiltViewModel()
+    viewModel: UserViewModel = hiltViewModel(),
+    appPrefsViewModel: AppPreferencesViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val appPrefs by appPrefsViewModel.preferences.collectAsStateWithLifecycle(initialValue = AppPreferences())
+    var showSettingsDialog by remember { mutableStateOf(false) }
+    var showChangeNicknameDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.loadUserData()
@@ -61,12 +75,42 @@ fun UserScreen(
 
     UserContent(
         uiState = uiState,
-        navController= navController
+        navController = navController,
+        onSettingsClick = { showSettingsDialog = true }
     )
+
+    if (showSettingsDialog) {
+        SettingsDialog(
+            onDismiss = { showSettingsDialog = false },
+            useDarkTheme = appPrefs.useDarkTheme ?: isSystemInDarkTheme(),
+            onDarkThemeChange = { appPrefsViewModel.setDarkTheme(it) },
+            useLargeText = appPrefs.useLargeText,
+            onLargeTextChange = { appPrefsViewModel.setLargeText(it) },
+            onChangeNicknameClick = {
+                showSettingsDialog = false
+                showChangeNicknameDialog = true
+            }
+        )
+    }
+
+    if (showChangeNicknameDialog) {
+        ChangeNicknameDialog(
+            currentNickname = uiState.user?.nickname ?: "",
+            onDismiss = { showChangeNicknameDialog = false },
+            onConfirm = { newNickname ->
+                viewModel.updateNickname(newNickname)
+                showChangeNicknameDialog = false
+            }
+        )
+    }
 }
 
 @Composable
-private fun UserContent(uiState: UserUiState, navController: NavController) {
+private fun UserContent(
+    uiState: UserUiState,
+    navController: NavController,
+    onSettingsClick: () -> Unit = {}
+) {
     when {
         uiState.isLoading -> {
             Box(
@@ -99,7 +143,7 @@ private fun UserContent(uiState: UserUiState, navController: NavController) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
             ) {
-                item { UserHeader(user = user) }
+                item { UserHeader(user = user, onSettingsClick = onSettingsClick) }
                 item { DividerSection() }
                 item { FavoriteGamesSection(
                     games = uiState.favoriteGames,
@@ -125,17 +169,29 @@ private fun UserContent(uiState: UserUiState, navController: NavController) {
 }
 
 @Composable
-private fun UserHeader(user: User) {
+private fun UserHeader(user: User, onSettingsClick: () -> Unit = {}) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        Text(
-            text = "Profile",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Profile",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            IconButton(onClick = onSettingsClick) {
+                Icon(
+                    Icons.Default.Settings,
+                    contentDescription = "Ajustes"
+                )
+            }
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 

@@ -18,7 +18,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DividerDefaults
@@ -70,7 +73,8 @@ fun GameInfoScreen(
     GameInfoContent(
         uiState = uiState,
         onBack = { navController.navigateUp() },
-        onRetry = { gameId?.toIntOrNull()?.let { viewModel.loadGame(it) } }
+        onRetry = { gameId?.toIntOrNull()?.let { viewModel.loadGame(it) } },
+        onToggleFavorites = { viewModel.toggleFavorites() }
     )
 }
 
@@ -79,7 +83,8 @@ fun GameInfoScreen(
 private fun GameInfoContent(
     uiState: GameInfoUiState,
     onBack: () -> Unit,
-    onRetry: () -> Unit
+    onRetry: () -> Unit,
+    onToggleFavorites: () -> Unit = {}
 ) {
     if (uiState.isLoading) {
         Box(Modifier.fillMaxSize(), Alignment.Center) {
@@ -117,14 +122,48 @@ private fun GameInfoContent(
             )
         }
 
-        TopGameInfo(game = game)
+        TopGameInfo(
+            game = game,
+            isInFavorites = uiState.isInFavorites,
+            isUpdatingFavorites = uiState.isUpdatingFavorites,
+            onToggleFavorites = onToggleFavorites
+        )
         RatingRow(rating = game.rating ?: 0.0)
         DescriptionRow(description = game.description?.takeIf { it.isNotBlank() } ?: "Sin descripción disponible.")
     }
 }
 
 @Composable
-private fun TopGameInfo(game: Game) {
+private fun FavoritesChip(
+    isInFavorites: Boolean,
+    isUpdating: Boolean,
+    onToggle: () -> Unit
+) {
+    AssistChip(
+        onClick = { if (!isUpdating) onToggle() },
+        label = {
+            Text(
+                text = if (isInFavorites) "Quitar de favoritos" else "Agregar a favoritos"
+            )
+        },
+        leadingIcon = {
+            Icon(
+                imageVector = if (isInFavorites) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                contentDescription = null,
+                modifier = Modifier.size(20.dp)
+            )
+        },
+        enabled = !isUpdating
+    )
+}
+
+@Composable
+private fun TopGameInfo(
+    game: Game,
+    isInFavorites: Boolean = false,
+    isUpdatingFavorites: Boolean = false,
+    onToggleFavorites: () -> Unit = {}
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -140,6 +179,12 @@ private fun TopGameInfo(game: Game) {
             Text(text = "RELEASE DATE · ${game.releaseYear ?: "N/A"}")
             Text(text = "PLATFORM · ${game.platformName ?: "Desconocida"}")
             Text(text = "GENRE · ${game.genreName ?: "Desconocido"}")
+            Spacer(modifier = Modifier.height(12.dp))
+            FavoritesChip(
+                isInFavorites = isInFavorites,
+                isUpdating = isUpdatingFavorites,
+                onToggle = onToggleFavorites
+            )
         }
 
         AsyncImage(

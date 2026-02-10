@@ -1,6 +1,5 @@
 package com.example.glog.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -9,7 +8,10 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.Density
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -33,10 +35,12 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
+private const val LARGE_TEXT_SCALE = 1.15f
+
 @Composable
 fun GLogTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
+    useLargeText: Boolean = false,
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
@@ -50,9 +54,21 @@ fun GLogTheme(
         else -> LightColorScheme
     }
 
+    val typography = if (useLargeText) scaledTypography(LARGE_TEXT_SCALE) else Typography
+
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
-        content = content
+        typography = typography,
+        content = {
+            val currentDensity = LocalDensity.current
+            CompositionLocalProvider(
+                LocalDensity provides Density(
+                    density = currentDensity.density,
+                    fontScale = if (useLargeText) LARGE_TEXT_SCALE else currentDensity.fontScale
+                )
+            ) {
+                content()
+            }
+        }
     )
 }

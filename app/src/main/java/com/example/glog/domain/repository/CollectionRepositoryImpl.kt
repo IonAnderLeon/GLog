@@ -97,4 +97,20 @@ class CollectionRepositoryImpl @Inject constructor(
             Result.failure(e)
         }
     }
+
+    override suspend fun removeGameFromCollection(collectionId: Long, gameId: Int): Result<Unit> {
+        return try {
+            val response = apiService.removeGameFromCollection(
+                collectionId = collectionId,
+                gameId = gameId
+            )
+            if (response.isSuccessful) {
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("Error ${response.code()}: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

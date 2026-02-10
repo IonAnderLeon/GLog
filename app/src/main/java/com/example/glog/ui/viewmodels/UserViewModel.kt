@@ -68,16 +68,13 @@ class UserViewModel @Inject constructor(
                 UserStats(
                     playTimeHours = totalHours,
                     distinctGames = distinctGames,
-                    favoritePlatform = "" // Se sobrescribe con la de favoritos
+                    favoritePlatform = ""
                 )
             },
             onFailure = { UserStats() }
         )
     }
 
-    /**
-     * De la fila de favoritos (row 1), obtiene la plataforma que más se repite entre los juegos.
-     */
     private fun mostFrequentPlatformFromGames(games: List<Game>): String {
         if (games.isEmpty()) return "—"
         val platformCounts = games
@@ -85,6 +82,22 @@ class UserViewModel @Inject constructor(
             .groupingBy { it }
             .eachCount()
         return platformCounts.maxByOrNull { it.value }?.key ?: "—"
+    }
+
+    fun updateNickname(newNickname: String) {
+        viewModelScope.launch {
+            val user = _uiState.value.user ?: return@launch
+            userRepository.updateUser(user.id.toLong(), newNickname.ifBlank { null }, user.image).fold(
+                onSuccess = { updatedUser ->
+                    _uiState.value = _uiState.value.copy(user = updatedUser, error = null)
+                },
+                onFailure = {
+                    _uiState.value = _uiState.value.copy(
+                        error = it.message ?: "Error al actualizar nickname"
+                    )
+                }
+            )
+        }
     }
 }
 

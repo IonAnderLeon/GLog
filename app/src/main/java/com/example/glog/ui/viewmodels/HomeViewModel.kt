@@ -33,6 +33,8 @@ class HomeViewModel @Inject constructor(
                     _uiState.value = _uiState.value.copy(
                         recentGames = games.take(10),
                         popularGames = games.sortedByDescending { it.rating }.take(10),
+                        pcGames = games.filter { it.platformName.equals("PC", ignoreCase = true) },
+                        adventureGames = games.filter { it.genreName.equals("Aventura", ignoreCase = true) },
                         isLoading = false
                     )
                 },
