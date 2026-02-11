@@ -32,10 +32,20 @@ class GameInfoViewModel @Inject constructor(
                         .getOrNull()
                         ?.games
                         ?.any { it.id == game.id } == true
+                    val similarGames = gameRepository.getAllGames().getOrNull()
+                        ?.filter { it.id != game.id }
+                        ?.filter {
+                            val sameGenre = game.genreName != null && it.genreName.equals(game.genreName!!, ignoreCase = true)
+                            val samePlatform = game.platformName != null && it.platformName.equals(game.platformName!!, ignoreCase = true)
+                            sameGenre || samePlatform
+                        }
+                        ?.take(10)
+                        ?: emptyList()
                     _uiState.value = _uiState.value.copy(
                         game = game,
                         isLoading = false,
-                        isInFavorites = isInFavorites
+                        isInFavorites = isInFavorites,
+                        similarGames = similarGames
                     )
                 },
                 onFailure = { error ->
@@ -60,9 +70,15 @@ class GameInfoViewModel @Inject constructor(
             }
             result.fold(
                 onSuccess = {
+                    val toastMessage = if (isCurrentlyInFavorites) {
+                        "Eliminado de favoritos correctamente"
+                    } else {
+                        "Añadido a favoritos correctamente"
+                    }
                     _uiState.value = _uiState.value.copy(
                         isInFavorites = !isCurrentlyInFavorites,
-                        isUpdatingFavorites = false
+                        isUpdatingFavorites = false,
+                        messageForToast = toastMessage
                     )
                 },
                 onFailure = {
@@ -70,5 +86,9 @@ class GameInfoViewModel @Inject constructor(
                 }
             )
         }
+    }
+
+    fun clearToastMessage() {
+        _uiState.value = _uiState.value.copy(messageForToast = null)
     }
 }

@@ -20,4 +20,13 @@ sealed class RegisterEvent {
         val gameName: String? = null,
         val gameImageUrl: String? = null
     ) : RegisterEvent()
+    data class UpdateRegister(
+        val register: Register,
+        val date: String?,
+        val playtime: Double?,
+        val gameId: Int?,
+        val gameName: String?,
+        val gameImageUrl: String?
+    ) : RegisterEvent()
+    data class DeleteRegister(val register: Register) : RegisterEvent()
 }

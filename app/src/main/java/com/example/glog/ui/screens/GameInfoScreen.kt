@@ -1,9 +1,12 @@
 package com.example.glog.ui.screens
 
+import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -38,6 +43,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
@@ -55,6 +61,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.glog.R
 import com.example.glog.domain.model.Game
+import com.example.glog.ui.navigation.Destination
 import com.example.glog.ui.state.GameInfoUiState
 import com.example.glog.ui.viewmodels.GameInfoViewModel
 
@@ -65,16 +72,25 @@ fun GameInfoScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val gameId = remember { navController.currentBackStackEntry?.arguments?.getString("id") }
+    val context = LocalContext.current
 
     LaunchedEffect(gameId) {
         gameId?.toIntOrNull()?.let { viewModel.loadGame(it) }
+    }
+
+    LaunchedEffect(uiState.messageForToast) {
+        uiState.messageForToast?.let { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            viewModel.clearToastMessage()
+        }
     }
 
     GameInfoContent(
         uiState = uiState,
         onBack = { navController.navigateUp() },
         onRetry = { gameId?.toIntOrNull()?.let { viewModel.loadGame(it) } },
-        onToggleFavorites = { viewModel.toggleFavorites() }
+        onToggleFavorites = { viewModel.toggleFavorites() },
+        onGameClick = { id -> navController.navigate(Destination.GameDetails.createRoute(id.toString())) }
     )
 }
 
@@ -84,7 +100,8 @@ private fun GameInfoContent(
     uiState: GameInfoUiState,
     onBack: () -> Unit,
     onRetry: () -> Unit,
-    onToggleFavorites: () -> Unit = {}
+    onToggleFavorites: () -> Unit = {},
+    onGameClick: (Int) -> Unit = {}
 ) {
     if (uiState.isLoading) {
         Box(Modifier.fillMaxSize(), Alignment.Center) {
@@ -130,6 +147,78 @@ private fun GameInfoContent(
         )
         RatingRow(rating = game.rating ?: 0.0)
         DescriptionRow(description = game.description?.takeIf { it.isNotBlank() } ?: "Sin descripción disponible.")
+        if (uiState.similarGames.isNotEmpty()) {
+            SimilarGamesRow(
+                games = uiState.similarGames,
+                onGameClick = onGameClick
+            )
+        }
+    }
+}
+
+@Composable
+private fun SimilarGamesRow(
+    games: List<Game>,
+    onGameClick: (Int) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp, bottom = 24.dp)
+    ) {
+        HorizontalDivider(
+            modifier = Modifier.padding(horizontal = 22.dp, vertical = 8.dp),
+            thickness = DividerDefaults.Thickness
+        )
+        Text(
+            text = "Juegos Similares",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(horizontal = 22.dp, vertical = 8.dp)
+        )
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(horizontal = 22.dp)
+        ) {
+            items(games) { game ->
+                SimilarGameCard(
+                    game = game,
+                    onClick = { onGameClick(game.id) }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SimilarGameCard(
+    game: Game,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .size(120.dp, 160.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .clickable(onClick = onClick)
+    ) {
+        AsyncImage(
+            model = game.imageUrl ?: "",
+            contentDescription = game.title,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop,
+            error = painterResource(R.drawable.placeholder)
+        )
+        Text(
+            text = game.title ?: "Sin título",
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .background(Color.Black.copy(alpha = 0.7f))
+                .fillMaxWidth()
+                .padding(4.dp),
+            color = Color.White,
+            fontSize = 11.sp,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 

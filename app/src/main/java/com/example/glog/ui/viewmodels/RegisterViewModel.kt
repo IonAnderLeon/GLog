@@ -2,6 +2,7 @@ package com.example.glog.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.glog.domain.model.Register
 import com.example.glog.domain.repository.RegisterRepository
 import com.example.glog.ui.state.RegisterEvent
 import com.example.glog.ui.state.RegisterState
@@ -31,6 +32,8 @@ class RegisterViewModel @Inject constructor(
                 gameName = event.gameName,
                 gameImageUrl = event.gameImageUrl
             )
+            is RegisterEvent.UpdateRegister -> updateRegister(event)
+            is RegisterEvent.DeleteRegister -> deleteRegister(event.register)
         }
     }
 
@@ -58,6 +61,55 @@ class RegisterViewModel @Inject constructor(
                 onSuccess = { created ->
                     _state.value = _state.value.copy(
                         registers = listOf(created) + _state.value.registers,
+                        isLoading = false,
+                        error = null
+                    )
+                },
+                onFailure = { error ->
+                    _state.value = _state.value.copy(
+                        error = error.message,
+                        isLoading = false
+                    )
+                }
+            )
+        }
+    }
+
+    private fun updateRegister(event: RegisterEvent.UpdateRegister) {
+        viewModelScope.launch {
+            _state.value = _state.value.copy(error = null)
+            val updated = event.register.copy(
+                date = event.date,
+                playtime = event.playtime,
+                gameId = event.gameId,
+                gameName = event.gameName?.takeIf { it.isNotBlank() },
+                gameImageUrl = event.gameImageUrl?.takeIf { it.isNotBlank() }
+            )
+            registerRepository.updateRegister(updated).fold(
+                onSuccess = {
+                    _state.value = _state.value.copy(
+                        registers = _state.value.registers.map { if (it.id == updated.id) updated else it },
+                        isLoading = false,
+                        error = null
+                    )
+                },
+                onFailure = { error ->
+                    _state.value = _state.value.copy(
+                        error = error.message,
+                        isLoading = false
+                    )
+                }
+            )
+        }
+    }
+
+    private fun deleteRegister(register: Register) {
+        viewModelScope.launch {
+            _state.value = _state.value.copy(error = null)
+            registerRepository.deleteRegister(register).fold(
+                onSuccess = {
+                    _state.value = _state.value.copy(
+                        registers = _state.value.registers.filter { it.id != register.id },
                         isLoading = false,
                         error = null
                     )

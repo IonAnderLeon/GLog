@@ -1,5 +1,11 @@
 package com.example.glog.ui.screens
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -33,9 +39,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -45,6 +53,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -68,6 +78,7 @@ fun UserScreen(
     val appPrefs by appPrefsViewModel.preferences.collectAsStateWithLifecycle(initialValue = AppPreferences())
     var showSettingsDialog by remember { mutableStateOf(false) }
     var showChangeNicknameDialog by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         viewModel.loadUserData()
@@ -85,7 +96,13 @@ fun UserScreen(
             useDarkTheme = appPrefs.useDarkTheme ?: isSystemInDarkTheme(),
             onDarkThemeChange = { appPrefsViewModel.setDarkTheme(it) },
             useLargeText = appPrefs.useLargeText,
-            onLargeTextChange = { appPrefsViewModel.setLargeText(it) },
+            onLargeTextChange = { newValue ->
+                showSettingsDialog = false
+                scope.launch {
+                    delay(150)
+                    appPrefsViewModel.setLargeText(newValue)
+                }
+            },
             onChangeNicknameClick = {
                 showSettingsDialog = false
                 showChangeNicknameDialog = true
@@ -170,6 +187,16 @@ private fun UserContent(
 
 @Composable
 private fun UserHeader(user: User, onSettingsClick: () -> Unit = {}) {
+    val infiniteTransition = rememberInfiniteTransition(label = "settings_rotation")
+    val rotation by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 4000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "rotation"
+    )
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -188,7 +215,8 @@ private fun UserHeader(user: User, onSettingsClick: () -> Unit = {}) {
             IconButton(onClick = onSettingsClick) {
                 Icon(
                     Icons.Default.Settings,
-                    contentDescription = "Ajustes"
+                    contentDescription = "Ajustes",
+                    modifier = Modifier.rotate(rotation)
                 )
             }
         }

@@ -7,5 +7,7 @@ data class GameInfoUiState(
     val game: Game? = null,
     val error: String? = null,
     val isInFavorites: Boolean = false,
-    val isUpdatingFavorites: Boolean = false
+    val isUpdatingFavorites: Boolean = false,
+    val messageForToast: String? = null,
+    val similarGames: List<Game> = emptyList()
 )
