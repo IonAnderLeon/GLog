@@ -310,15 +310,15 @@ private fun RatingColumn(rating: Double) {
         Text(
             text = String.format("%.1f", rating),
             style = MaterialTheme.typography.titleLarge,
-            color = Color.Gray,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = 40.sp
         )
         StarRatingBar(
             rating = rating,
             maxStars = 5,
             starSize = 30.dp,
-            activeColor = Color.Gray,
-            inactiveColor = Color.DarkGray
+            activeColor = MaterialTheme.colorScheme.primary,
+            inactiveColor = MaterialTheme.colorScheme.outlineVariant
         )
     }
 }

@@ -1,6 +1,5 @@
 package com.example.glog.ui.screens
 
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,34 +26,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import kotlin.math.roundToInt
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -63,6 +47,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.glog.domain.model.Game
+import com.example.glog.ui.components.MarqueeText
 import com.example.glog.ui.navigation.Destination
 import com.example.glog.ui.state.HomeUiState
 import com.example.glog.ui.viewmodels.GameSearchViewModel
@@ -122,7 +107,8 @@ private fun HomeContent(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
         )
 
         homeState.error?.let { errorMsg ->
@@ -175,7 +161,6 @@ private fun HomeContent(
                 onGameClick = onGameClick
             )
         } else {
-            // Mostrar secciones normales
             HomeSectionsContent(
                 homeState = homeState,
                 onGameClick = onGameClick
@@ -249,17 +234,18 @@ private fun SearchResultItem(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = game.title ?: "Sin título",
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     text = "${game.platformName ?: ""} • ${game.genreName ?: ""}",
                     fontSize = 12.sp,
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
                     text = "Año: ${game.releaseYear ?: "N/A"} • Rating: ${game.rating ?: "N/A"}",
                     fontSize = 12.sp,
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
@@ -322,7 +308,8 @@ private fun GameSection(
             text = title,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             fontSize = 18.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         LazyRow(
@@ -374,143 +361,6 @@ private fun GameCard(
                 fontSize = 12.sp,
                 color = Color.White
             )
-        }
-    }
-}
-
-@Composable
-private fun MarqueeText(
-    text: String,
-    modifier: Modifier = Modifier,
-    fontSize: TextUnit = 12.sp,
-    color: Color = Color.White
-) {
-    var textWidthPx by remember { mutableIntStateOf(0) }
-    var boxWidthPx by remember { mutableIntStateOf(0) }
-    val density = LocalDensity.current
-    val gapPx = with(density) { 32.dp.roundToPx() }
-    val needMarquee = textWidthPx > 0 && boxWidthPx > 0 && textWidthPx > boxWidthPx
-
-    val infiniteTransition = rememberInfiniteTransition(label = "marquee")
-    val offset by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = -(textWidthPx + gapPx).toFloat(),
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 8000,
-                easing = LinearEasing,
-                delayMillis = 0),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "marqueeOffset"
-    )
-
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .onSizeChanged { boxWidthPx = it.width }
-            .clipToBounds()
-    ) {
-        when {
-            textWidthPx == 0 -> {
-                UnboundedMeasureLayout(
-                    onMeasuredWidth = { textWidthPx = it }
-                ) {
-                    Text(
-                        text = text,
-                        fontSize = fontSize,
-                        color = color,
-                        maxLines = 1
-                    )
-                }
-            }
-            needMarquee -> {
-                MarqueeScrollLayout(
-                    scrollOffsetPx = offset.roundToInt()
-                ) {
-                    Row {
-                        Text(
-                            text = text,
-                            fontSize = fontSize,
-                            color = color,
-                            maxLines = 1
-                        )
-                        Spacer(modifier = Modifier.width(32.dp))
-                        Text(
-                            text = text,
-                            fontSize = fontSize,
-                            color = color,
-                            maxLines = 1
-                        )
-                    }
-                }
-            }
-            else -> {
-                Text(
-                    text = text,
-                    fontSize = fontSize,
-                    color = color,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-        }
-    }
-}
-
-/**
- * Layout que dibuja su hijo (Row con dos textos) con ancho ilimitado y lo coloca con [scrollOffsetPx].
- * Así el Row no se recorta por el ancho de la card y al hacer scroll se ve todo el texto hasta el final.
- */
-@Composable
-private fun MarqueeScrollLayout(
-    scrollOffsetPx: Int,
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
-) {
-    Layout(
-        modifier = modifier.fillMaxWidth(),
-        content = content
-    ) { measurables, constraints ->
-        val unboundedConstraints = Constraints(
-            minWidth = 0,
-            maxWidth = Int.MAX_VALUE,
-            minHeight = 0,
-            maxHeight = constraints.maxHeight
-        )
-        val placeable = measurables.first().measure(unboundedConstraints)
-        layout(constraints.maxWidth, placeable.height) {
-            placeable.place(scrollOffsetPx, 0)
-        }
-    }
-}
-
-/**
- * Layout que mide su hijo con ancho ilimitado para obtener el ancho real del contenido
- * (p. ej. texto largo sin recortar). Así podemos saber si hace falta marquesina.
- */
-@Composable
-private fun UnboundedMeasureLayout(
-    onMeasuredWidth: (Int) -> Unit,
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
-) {
-    Layout(
-        modifier = modifier,
-        content = {
-            Box(Modifier.onSizeChanged { onMeasuredWidth(it.width) }) {
-                content()
-            }
-        }
-    ) { measurables, constraints ->
-        val unboundedConstraints = Constraints(
-            minWidth = 0,
-            maxWidth = Int.MAX_VALUE,
-            minHeight = 0,
-            maxHeight = constraints.maxHeight
-        )
-        val placeable = measurables.first().measure(unboundedConstraints)
-        layout(placeable.width, placeable.height) {
-            placeable.place(0, 0)
         }
     }
 }

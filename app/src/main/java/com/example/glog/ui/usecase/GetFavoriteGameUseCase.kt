@@ -9,11 +9,9 @@ class GetFavoriteGamesUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(): Result<List<Game>> {
         return try {
-            // Llama al repositorio para obtener la colección con ID 1 (favoritos)
             val collectionResult = collectionRepository.getCollectionById(1)
 
             collectionResult.map { collection ->
-                // Retorna los juegos de la colección
                 collection.games
             }
         } catch (e: Exception) {

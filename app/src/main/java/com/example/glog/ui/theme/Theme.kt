@@ -12,27 +12,59 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Density
-
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+private val GLogDarkColorScheme = darkColorScheme(
+    primary = GamerCyan,
+    onPrimary = GamerDarkOnPrimary,
+    primaryContainer = GamerCianDim,
+    onPrimaryContainer = GamerDarkOnBackground,
+    secondary = GamerOrange,
+    onSecondary = GamerDarkOnSecondary,
+    secondaryContainer = GamerDarkSurfaceVariant,
+    onSecondaryContainer = GamerDarkOnSurface,
+    tertiary = GamerGreen,
+    onTertiary = GamerDarkOnTertiary,
+    tertiaryContainer = GamerDarkSurfaceContainerHighest,
+    onTertiaryContainer = GamerDarkOnSurface,
+    error = GamerRed,
+    onError = GamerDarkOnPrimary,
+    errorContainer = GamerDarkSurfaceVariant,
+    onErrorContainer = GamerRed,
+    background = GamerDarkBackground,
+    onBackground = GamerDarkOnBackground,
+    surface = GamerDarkSurface,
+    onSurface = GamerDarkOnSurface,
+    surfaceVariant = GamerDarkSurfaceVariant,
+    onSurfaceVariant = GamerDarkOnSurfaceVariant,
+    surfaceContainerHighest = GamerDarkSurfaceContainerHighest,
+    outline = GamerDarkOutline,
+    outlineVariant = GamerDarkOutlineVariant
 )
-
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+private val GLogLightColorScheme = lightColorScheme(
+    primary = GamerCianLight,
+    onPrimary = GamerLightOnPrimary,
+    primaryContainer = GamerCianLightDim,
+    onPrimaryContainer = GamerLightOnBackground,
+    secondary = GamerOrangeLight,
+    onSecondary = GamerLightOnSecondary,
+    secondaryContainer = GamerLightSurfaceVariant,
+    onSecondaryContainer = GamerLightOnSurface,
+    tertiary = GamerGreenLight,
+    onTertiary = GamerLightOnTertiary,
+    tertiaryContainer = GamerLightSurfaceContainerHighest,
+    onTertiaryContainer = GamerLightOnSurface,
+    error = GamerRedLight,
+    onError = GamerLightOnPrimary,
+    errorContainer = GamerLightSurfaceVariant,
+    onErrorContainer = GamerRedLight,
+    background = GamerLightBackground,
+    onBackground = GamerLightOnBackground,
+    surface = GamerLightSurface,
+    onSurface = GamerLightOnSurface,
+    surfaceVariant = GamerLightSurfaceVariant,
+    onSurfaceVariant = GamerLightOnSurfaceVariant,
+    surfaceContainerHighest = GamerLightSurfaceContainerHighest,
+    outline = GamerLightOutline,
+    outlineVariant = GamerLightOutlineVariant
 )
 
 private const val LARGE_TEXT_SCALE = 1.15f
@@ -41,7 +73,7 @@ private const val LARGE_TEXT_SCALE = 1.15f
 fun GLogTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     useLargeText: Boolean = false,
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -49,9 +81,8 @@ fun GLogTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        darkTheme -> GLogDarkColorScheme
+        else -> GLogLightColorScheme
     }
 
     val typography = if (useLargeText) scaledTypography(LARGE_TEXT_SCALE) else Typography

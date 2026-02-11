@@ -49,10 +49,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.glog.ui.components.MarqueeText
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -179,7 +180,10 @@ private fun UserContent(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Text("No hay datos de usuario")
+                Text(
+                    "No hay datos de usuario",
+                    color = MaterialTheme.colorScheme.onBackground
+                )
             }
         }
     }
@@ -209,7 +213,8 @@ private fun UserHeader(user: User, onSettingsClick: () -> Unit = {}) {
             Text(
                 text = "Profile",
                 fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.weight(1f))
             IconButton(onClick = onSettingsClick) {
@@ -241,7 +246,8 @@ private fun UserHeader(user: User, onSettingsClick: () -> Unit = {}) {
             Text(
                 text = user.nickname ?: "Usuario",
                 fontSize = 28.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
     }
@@ -268,7 +274,8 @@ private fun FavoriteGamesSection(
             text = "Favoritos",
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         LazyRow(
@@ -305,18 +312,20 @@ private fun GameCard(
             error = painterResource(R.drawable.placeholder)
         )
 
-        Text(
-            text = game.title ?: "Sin título",
+        Box(
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .background(Color.Black.copy(alpha = 0.7f))
                 .fillMaxWidth()
-                .padding(4.dp),
-            color = Color.White,
-            fontSize = 12.sp,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
+                .padding(4.dp)
+                .clipToBounds()
+        ) {
+            MarqueeText(
+                text = game.title ?: "Sin título",
+                fontSize = 12.sp,
+                color = Color.White
+            )
+        }
     }
 }
 
@@ -329,7 +338,8 @@ private fun StatsSection(stats: UserStats) {
             text = "Estadísticas",
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         Row(
@@ -361,9 +371,10 @@ private fun StatsSection(stats: UserStats) {
         Column(modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center) {
-            Text("Welcome Gamer!",
+        Text("Welcome Gamer!",
                 fontSize = 24.sp,
-                fontWeight = FontWeight.Bold)}
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground)}
     }
 }
 
@@ -376,13 +387,15 @@ private fun StatItem(value: String, label: String) {
         Text(
             text = value,
             fontSize = 32.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         Text(
             text = label,
             fontSize = 12.sp,
-            modifier = Modifier.padding(top = 4.dp)
+            modifier = Modifier.padding(top = 4.dp),
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
