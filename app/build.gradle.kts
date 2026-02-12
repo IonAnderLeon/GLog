@@ -39,6 +39,13 @@ android {
     buildFeatures {
         compose = true
     }
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+            isReturnDefaultValues = true
+        }
+    }
 }
 
 dependencies {
@@ -79,6 +86,13 @@ dependencies {
 
     // DataStore preferences
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    // TESTS UNITARIOS (en src/test/)
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation("io.mockk:mockk:1.13.8")
+    testImplementation("app.cash.turbine:turbine:1.0.0") // Para testing de Flow
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+
 
     testImplementation(libs.junit)
     // Testing
