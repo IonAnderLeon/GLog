@@ -59,6 +59,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import androidx.compose.ui.res.stringResource
 import com.example.glog.R
 import com.example.glog.domain.model.Game
 import com.example.glog.ui.navigation.Destination
@@ -78,9 +79,9 @@ fun GameInfoScreen(
         gameId?.toIntOrNull()?.let { viewModel.loadGame(it) }
     }
 
-    LaunchedEffect(uiState.messageForToast) {
-        uiState.messageForToast?.let { message ->
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    LaunchedEffect(uiState.messageForToastResId) {
+        uiState.messageForToastResId?.let { resId ->
+            Toast.makeText(context, context.getString(resId), Toast.LENGTH_SHORT).show()
             viewModel.clearToastMessage()
         }
     }
@@ -112,9 +113,9 @@ private fun GameInfoContent(
 
     uiState.error?.let {
         Column(Modifier.fillMaxSize(), Arrangement.Center, Alignment.CenterHorizontally) {
-            Text("Error: $it", color = MaterialTheme.colorScheme.error)
+            Text(stringResource(R.string.error_message, it), color = MaterialTheme.colorScheme.error)
             Spacer(Modifier.height(16.dp))
-            Button(onClick = onRetry) { Text("Reintentar") }
+            Button(onClick = onRetry) { Text(stringResource(R.string.retry)) }
         }
         return
     }
@@ -135,7 +136,7 @@ private fun GameInfoContent(
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Volver"
+                contentDescription = stringResource(R.string.back)
             )
         }
 
@@ -146,7 +147,7 @@ private fun GameInfoContent(
             onToggleFavorites = onToggleFavorites
         )
         RatingRow(rating = game.rating ?: 0.0)
-        DescriptionRow(description = game.description?.takeIf { it.isNotBlank() } ?: "Sin descripción disponible.")
+        DescriptionRow(description = game.description?.takeIf { it.isNotBlank() } ?: stringResource(R.string.no_description))
         if (uiState.similarGames.isNotEmpty()) {
             SimilarGamesRow(
                 games = uiState.similarGames,
@@ -171,7 +172,7 @@ private fun SimilarGamesRow(
             thickness = DividerDefaults.Thickness
         )
         Text(
-            text = "Juegos Similares",
+            text = stringResource(R.string.similar_games),
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(horizontal = 22.dp, vertical = 8.dp)
         )
@@ -208,7 +209,7 @@ private fun SimilarGameCard(
             error = painterResource(R.drawable.placeholder)
         )
         Text(
-            text = game.title ?: "Sin título",
+            text = game.title ?: stringResource(R.string.no_title),
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .background(Color.Black.copy(alpha = 0.7f))
@@ -232,7 +233,7 @@ private fun FavoritesChip(
         onClick = { if (!isUpdating) onToggle() },
         label = {
             Text(
-                text = if (isInFavorites) "Quitar de favoritos" else "Agregar a favoritos"
+                text = if (isInFavorites) stringResource(R.string.remove_from_favorites) else stringResource(R.string.add_to_favorites)
             )
         },
         leadingIcon = {
@@ -262,12 +263,12 @@ private fun TopGameInfo(
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = game.title ?: "Sin título",
+                text = game.title ?: stringResource(R.string.no_title),
                 style = MaterialTheme.typography.titleLarge
             )
-            Text(text = "RELEASE DATE · ${game.releaseYear ?: "N/A"}")
-            Text(text = "PLATFORM · ${game.platformName ?: "Desconocida"}")
-            Text(text = "GENRE · ${game.genreName ?: "Desconocido"}")
+            Text(text = stringResource(R.string.release_date_format, game.releaseYear?.toString() ?: stringResource(R.string.na)))
+            Text(text = stringResource(R.string.platform_format, game.platformName ?: stringResource(R.string.platform_unknown)))
+            Text(text = stringResource(R.string.genre_format, game.genreName ?: stringResource(R.string.genre_unknown)))
             Spacer(modifier = Modifier.height(12.dp))
             FavoritesChip(
                 isInFavorites = isInFavorites,
@@ -344,7 +345,7 @@ private fun DescriptionRow(description: String) {
         )
 
         Text(
-            text = if (expanded) "Mostrar menos." else "Ver más...",
+            text = if (expanded) stringResource(R.string.show_less) else stringResource(R.string.show_more),
             color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.labelSmall,
             modifier = Modifier

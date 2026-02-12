@@ -2,6 +2,7 @@ package com.example.glog.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.glog.R
 import com.example.glog.domain.repository.CollectionRepository
 import com.example.glog.domain.repository.GameRepository
 import com.example.glog.ui.state.GameInfoUiState
@@ -70,15 +71,15 @@ class GameInfoViewModel @Inject constructor(
             }
             result.fold(
                 onSuccess = {
-                    val toastMessage = if (isCurrentlyInFavorites) {
-                        "Eliminado de favoritos correctamente"
+                    val toastResId = if (isCurrentlyInFavorites) {
+                        R.string.toast_removed_from_favorites
                     } else {
-                        "Añadido a favoritos correctamente"
+                        R.string.toast_added_to_favorites
                     }
                     _uiState.value = _uiState.value.copy(
                         isInFavorites = !isCurrentlyInFavorites,
                         isUpdatingFavorites = false,
-                        messageForToast = toastMessage
+                        messageForToastResId = toastResId
                     )
                 },
                 onFailure = {
@@ -89,6 +90,6 @@ class GameInfoViewModel @Inject constructor(
     }
 
     fun clearToastMessage() {
-        _uiState.value = _uiState.value.copy(messageForToast = null)
+        _uiState.value = _uiState.value.copy(messageForToastResId = null)
     }
 }

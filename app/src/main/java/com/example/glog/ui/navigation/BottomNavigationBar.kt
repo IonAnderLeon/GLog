@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -69,13 +70,13 @@ fun BottomNavigationBar(
                 icon = {
                     Icon(
                         imageVector = item.icon,
-                        contentDescription = item.contentDescription,
+                        contentDescription = stringResource(item.contentDescriptionResId),
                         tint = iconColor,
                         modifier = Modifier.size(24.dp)
                     )
                 },
                 label = {
-                    AnimatedNavLabel(visible = isSelected, text = item.label)
+                    AnimatedNavLabel(visible = isSelected, text = stringResource(item.labelResId))
                 },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = MaterialTheme.colorScheme.primary,

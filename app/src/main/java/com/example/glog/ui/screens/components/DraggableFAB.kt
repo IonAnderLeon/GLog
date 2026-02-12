@@ -18,8 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.glog.R
 
 data class FabPosition(
     val x: Dp,
@@ -76,7 +78,7 @@ fun DraggableFAB(
     ) {
         Icon(
             imageVector = Icons.Filled.Add,
-            contentDescription = "Añadir",
+            contentDescription = stringResource(R.string.add),
             modifier = Modifier.size(24.dp)
         )
     }

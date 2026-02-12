@@ -67,7 +67,7 @@ private val GLogLightColorScheme = lightColorScheme(
     outlineVariant = GamerLightOutlineVariant
 )
 
-private const val LARGE_TEXT_SCALE = 1.15f
+private const val LARGE_TEXT_SCALE = 1.20f
 
 @Composable
 fun GLogTheme(

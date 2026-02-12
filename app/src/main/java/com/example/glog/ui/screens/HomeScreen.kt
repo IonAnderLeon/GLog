@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -102,7 +103,7 @@ private fun HomeContent(
             .background(MaterialTheme.colorScheme.background)
     ) {
         Text(
-            text = "Home",
+            text = stringResource(R.string.nav_home),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp),
@@ -113,7 +114,7 @@ private fun HomeContent(
 
         homeState.error?.let { errorMsg ->
             Text(
-                text = "Error: $errorMsg",
+                text = stringResource(R.string.error_message, errorMsg),
                 color = MaterialTheme.colorScheme.error,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -134,7 +135,7 @@ private fun HomeContent(
                     value = homeState.searchText,
                     onValueChange = onSearchTextChange,
                     modifier = Modifier.weight(1f),
-                    placeholder = { Text("Buscar...") },
+                    placeholder = { Text(stringResource(R.string.search_placeholder)) },
                     trailingIcon = {
                         if (isSearching) {
                             CircularProgressIndicator(modifier = Modifier.size(20.dp))
@@ -148,12 +149,11 @@ private fun HomeContent(
             IconButton(onClick = onToggleSearch) {
                 Icon(
                     imageVector = if (homeState.showSearchBar) Icons.Default.Close else Icons.Default.Search,
-                    contentDescription = if (homeState.showSearchBar) "Cerrar búsqueda" else "Buscar"
+                    contentDescription = if (homeState.showSearchBar) stringResource(R.string.close_search) else stringResource(R.string.search)
                 )
             }
         }
 
-        // Mostrar resultados de búsqueda si hay texto
         if (homeState.showSearchBar && homeState.searchText.isNotBlank()) {
             SearchResultsContent(
                 searchResults = searchResults,
@@ -184,7 +184,7 @@ private fun SearchResultsContent(
 
         searchResults.isEmpty() -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("No se encontraron juegos")
+                Text(stringResource(R.string.no_games_found))
             }
         }
 
@@ -233,17 +233,17 @@ private fun SearchResultItem(
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = game.title ?: "Sin título",
+                    text = game.title ?: stringResource(R.string.no_title),
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
-                    text = "${game.platformName ?: ""} • ${game.genreName ?: ""}",
+                    text = stringResource(R.string.platform_genre_format, game.platformName ?: "", game.genreName ?: ""),
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = "Año: ${game.releaseYear ?: "N/A"} • Rating: ${game.rating ?: "N/A"}",
+                    text = stringResource(R.string.year_rating_format, game.releaseYear?.toString() ?: stringResource(R.string.na), game.rating?.toString() ?: stringResource(R.string.na)),
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -263,7 +263,7 @@ private fun HomeSectionsContent(
     ) {
         item {
             GameSection(
-                title = "Recientes",
+                title = stringResource(R.string.section_recent),
                 games = homeState.recentGames,
                 onGameClick = onGameClick
             )
@@ -271,7 +271,7 @@ private fun HomeSectionsContent(
 
         item {
             GameSection(
-                title = "Populares",
+                title = stringResource(R.string.section_popular),
                 games = homeState.popularGames,
                 onGameClick = onGameClick
             )
@@ -279,7 +279,7 @@ private fun HomeSectionsContent(
 
         item {
             GameSection(
-                title = "Juegos de PC",
+                title = stringResource(R.string.section_pc_games),
                 games = homeState.pcGames,
                 onGameClick = onGameClick
             )
@@ -287,7 +287,7 @@ private fun HomeSectionsContent(
 
         item {
             GameSection(
-                title = "Juegos de género Aventura",
+                title = stringResource(R.string.section_adventure_games),
                 games = homeState.adventureGames,
                 onGameClick = onGameClick
             )
@@ -357,7 +357,7 @@ private fun GameCard(
                 .clipToBounds()
         ) {
             MarqueeText(
-                text = game.title ?: "Sin título",
+                text = game.title ?: stringResource(R.string.no_title),
                 fontSize = 12.sp,
                 color = Color.White
             )

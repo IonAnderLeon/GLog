@@ -61,6 +61,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import androidx.compose.ui.res.stringResource
 import com.example.glog.R
 import com.example.glog.domain.model.Collection
 import com.example.glog.domain.model.Game
@@ -117,7 +118,7 @@ private fun CollectionListContent(
     ) {
         state.error?.let { errorMsg ->
             Text(
-                text = "Error: $errorMsg",
+                text = stringResource(R.string.error_message, errorMsg),
                 color = MaterialTheme.colorScheme.error,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -189,7 +190,7 @@ private fun CollectionCard(
                 )
             }
             Text(
-                text = collection.name.ifBlank { "Sin nombre" },
+                text = collection.name.ifBlank { stringResource(R.string.no_name) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.surfaceVariant)
@@ -237,7 +238,7 @@ private fun CollectionInfoScreen(
             IconButton(onClick = onBack) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Volver"
+                    contentDescription = stringResource(R.string.back)
                 )
             }
             if (isEditingName) {
@@ -261,12 +262,12 @@ private fun CollectionInfoScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Check,
-                        contentDescription = "Guardar"
+                        contentDescription = stringResource(R.string.save)
                     )
                 }
             } else {
                 Text(
-                    text = collection.name.ifBlank { "Colección" },
+                    text = collection.name.ifBlank { stringResource(R.string.collection) },
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f)
@@ -274,13 +275,13 @@ private fun CollectionInfoScreen(
                 IconButton(onClick = { isEditingName = true; editedName = collection.name }) {
                     Icon(
                         imageVector = Icons.Default.Edit,
-                        contentDescription = "Editar nombre"
+                        contentDescription = stringResource(R.string.edit_collection_name)
                     )
                 }
                 IconButton(onClick = { showDeleteDialog = true }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Eliminar colección",
+                        contentDescription = stringResource(R.string.delete_collection),
                         tint = MaterialTheme.colorScheme.error
                     )
                 }
@@ -290,8 +291,8 @@ private fun CollectionInfoScreen(
         if (showDeleteDialog) {
             AlertDialog(
                 onDismissRequest = { showDeleteDialog = false },
-                title = { Text("Eliminar colección") },
-                text = { Text("¿Eliminar \"${collection.name.ifBlank { "Colección" }}\"? Esta acción no se puede deshacer.") },
+                title = { Text(stringResource(R.string.delete_collection_title)) },
+                text = { Text(stringResource(R.string.delete_collection_confirmation, collection.name.ifBlank { stringResource(R.string.collection) })) },
                 confirmButton = {
                     TextButton(
                         onClick = {
@@ -299,12 +300,12 @@ private fun CollectionInfoScreen(
                             onDeleteCollection()
                         }
                     ) {
-                        Text("Eliminar", color = MaterialTheme.colorScheme.error)
+                        Text(stringResource(R.string.delete), color = MaterialTheme.colorScheme.error)
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { showDeleteDialog = false }) {
-                        Text("Cancelar")
+                        Text(stringResource(R.string.cancel))
                     }
                 }
             )
@@ -322,7 +323,7 @@ private fun CollectionInfoScreen(
         }
 
         Text(
-            text = "Juegos (${collection.games.size})",
+            text = stringResource(R.string.games_count, collection.games.size),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp),
@@ -387,7 +388,7 @@ private fun AddGameCard(
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
-                contentDescription = "Añadir juego",
+                contentDescription = stringResource(R.string.add_game),
                 modifier = Modifier.size(48.dp),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -409,7 +410,7 @@ private fun AddGameToCollectionDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Añadir juego a la colección") },
+        title = { Text(stringResource(R.string.add_game_to_collection_title)) },
         text = {
             val scrollState = rememberScrollState()
             Column(
@@ -425,7 +426,7 @@ private fun AddGameToCollectionDialog(
                         selectedGame = null
                         gameSearchViewModel.searchGames(it)
                     },
-                    label = { Text("Buscar juego") },
+                    label = { Text(stringResource(R.string.search_game)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -455,7 +456,7 @@ private fun AddGameToCollectionDialog(
                                     .filter { it.id !in existingGameIds }
                             ) { game: Game ->
                                 Text(
-                                    text = game.title ?: "Sin título",
+                                    text = game.title ?: stringResource(R.string.no_title),
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .clickable {
@@ -478,12 +479,12 @@ private fun AddGameToCollectionDialog(
                     selectedGame?.let { onAdd(it) }
                 }
             ) {
-                Text("Añadir", color = MaterialTheme.colorScheme.primary)
+                Text(stringResource(R.string.add), color = MaterialTheme.colorScheme.primary)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancelar", color = MaterialTheme.colorScheme.onSurface)
+                Text(stringResource(R.string.cancel), color = MaterialTheme.colorScheme.onSurface)
             }
         }
     )
@@ -520,7 +521,7 @@ private fun GameInCollectionCard(
                 .clip(RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp))
         ) {
             Text(
-                text = game.title?.ifBlank { "Sin título" } ?: "Sin título",
+                text = game.title?.ifBlank { stringResource(R.string.no_title) } ?: stringResource(R.string.no_title),
                 color = Color.White,
                 fontSize = 12.sp,
                 maxLines = 1,

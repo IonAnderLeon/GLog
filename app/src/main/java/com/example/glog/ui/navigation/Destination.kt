@@ -1,5 +1,6 @@
 package com.example.glog.ui.navigation
 
+import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
@@ -26,29 +27,29 @@ sealed class Destination(
 // Clase para representar items de bottom navigation
 data class BottomNavItem(
     val destination: Destination,
-    val label: String,
+    @StringRes val labelResId: Int,
     val icon: ImageVector,
-    val contentDescription: String
+    @StringRes val contentDescriptionResId: Int
 )
 
 // Lista de items para el bottom navigation
 val bottomNavItems = listOf(
     BottomNavItem(
         destination = Destination.Home,
-        label = "Home",
+        labelResId = com.example.glog.R.string.nav_home,
         icon = Icons.Default.Home,
-        contentDescription = "Home"
+        contentDescriptionResId = com.example.glog.R.string.nav_home
     ),
     BottomNavItem(
         destination = Destination.Cluster,
-        label = "Cluster",
+        labelResId = com.example.glog.R.string.nav_cluster,
         icon = Icons.Default.DateRange,
-        contentDescription = "Cluster"
+        contentDescriptionResId = com.example.glog.R.string.nav_cluster
     ),
     BottomNavItem(
         destination = Destination.Profile,
-        label = "Profile",
+        labelResId = com.example.glog.R.string.nav_profile,
         icon = Icons.Default.Person,
-        contentDescription = "Profile"
+        contentDescriptionResId = com.example.glog.R.string.nav_profile
     )
 )

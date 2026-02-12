@@ -1,3 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">GLog</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_cluster">Cluster</string>
+    <string name="nav_profile">Profile</string>
+
+    <!-- Common -->
+    <string name="error_message">Error: %1$s</string>
+    <string name="retry">Reintentar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="save">Guardar</string>
+    <string name="create">Crear</string>
+    <string name="delete">Eliminar</string>
+    <string name="edit">Editar</string>
+    <string name="back">Volver</string>
+    <string name="search">Buscar</string>
+    <string name="close_search">Cerrar búsqueda</string>
+    <string name="no_title">Sin título</string>
+    <string name="no_game">Sin juego</string>
+    <string name="no_name">Sin nombre</string>
+    <string name="collection">Colección</string>
+    <string name="add">Añadir</string>
+    <string name="add_game">Añadir juego</string>
+
+    <!-- Home -->
+    <string name="search_placeholder">Buscar…</string>
+    <string name="no_games_found">No se encontraron juegos</string>
+    <string name="year_rating_format">Año: %1$s • Rating: %2$s</string>
+    <string name="platform_genre_format">%1$s • %2$s</string>
+    <string name="section_recent">Recientes</string>
+    <string name="section_popular">Populares</string>
+    <string name="section_pc_games">Juegos de PC</string>
+    <string name="section_adventure_games">Juegos de género Aventura</string>
+    <string name="na">N/A</string>
+
+    <!-- User/Profile -->
+    <string name="no_user_data">No hay datos de usuario</string>
+    <string name="settings">Ajustes</string>
+    <string name="profile_picture">Profile Picture</string>
+    <string name="user_default">Usuario</string>
+    <string name="favorites">Favoritos</string>
+    <string name="stats">Estadísticas</string>
+    <string name="total_hours">Horas totales</string>
+    <string name="distinct_games">Juegos distintos</string>
+    <string name="favorite_platform">Plataforma fav</string>
+    <string name="welcome_gamer">Welcome Gamer!</string>
+
+    <!-- Register -->
+    <string name="register_edit">Editar</string>
+    <string name="register_delete">Eliminar</string>
+    <string name="expand">Expandir</string>
+    <string name="collapse">Contraer</string>
+    <string name="time_format">Tiempo: %1$s</string>
+    <string name="date_format">Fecha: %1$s</string>
+    <string name="delete_register_title">Eliminar registro</string>
+    <string name="delete_register_confirmation">¿Eliminar el registro de \"%1$s\"? Esta acción no se puede deshacer.</string>
+    <string name="edit_register_title">Editar registro</string>
+    <string name="field_date">Fecha</string>
+    <string name="field_playtime_optional">Tiempo jugado (opcional)</string>
+    <string name="field_game_search">Juego (buscar por nombre)</string>
+    <string name="dash">—</string>
+
+    <!-- Cluster -->
+    <string name="tab_collections">Colecciones</string>
+    <string name="tab_registers">Registros</string>
+    <string name="new_collection_title">Nueva colección</string>
+    <string name="field_name">Nombre</string>
+    <string name="field_description_optional">Descripción (opcional)</string>
+    <string name="new_register_title">Nuevo registro</string>
+
+    <!-- Game Info -->
+    <string name="similar_games">Juegos Similares</string>
+    <string name="remove_from_favorites">Quitar de favoritos</string>
+    <string name="add_to_favorites">Agregar a favoritos</string>
+    <string name="release_date_format">RELEASE DATE · %1$s</string>
+    <string name="platform_format">PLATFORM · %1$s</string>
+    <string name="genre_format">GENRE · %1$s</string>
+    <string name="platform_unknown">Desconocida</string>
+    <string name="genre_unknown">Desconocido</string>
+    <string name="no_description">Sin descripción disponible.</string>
+    <string name="show_less">Mostrar menos.</string>
+    <string name="show_more">Ver más…</string>
+    <string name="toast_added_to_favorites">Añadido a favoritos correctamente</string>
+    <string name="toast_removed_from_favorites">Eliminado de favoritos correctamente</string>
+
+    <!-- Collection -->
+    <string name="delete_collection_title">Eliminar colección</string>
+    <string name="delete_collection_confirmation">¿Eliminar \"%1$s\"? Esta acción no se puede deshacer.</string>
+    <string name="edit_collection_name">Editar nombre</string>
+    <string name="delete_collection">Eliminar colección</string>
+    <string name="games_count">Juegos (%d)</string>
+    <string name="add_game_to_collection_title">Añadir juego a la colección</string>
+    <string name="search_game">Buscar juego</string>
+
+    <!-- Settings -->
+    <string name="dark_theme">Tema oscuro</string>
+    <string name="change_nickname">Cambiar nickname</string>
+    <string name="large_text">Letra más grande</string>
+    <string name="close">Cerrar</string>
+    <string name="field_nickname">Nickname</string>
+
+    <!-- ViewModel messages (shown in UI) -->
+    <string name="error_loading_user">Error al cargar usuario</string>
+    <string name="error_loading_favorites">No se pudieron cargar los juegos favoritos</string>
+    <string name="error_updating_nickname">Error al actualizar nickname</string>
+    <string name="platform_default">PC</string>
+    <string name="platform_unknown_stats">Desconocida</string>
+    <string name="empty_stat">—</string>
+    <string name="genre_adventure">Aventura</string>
 </resources>

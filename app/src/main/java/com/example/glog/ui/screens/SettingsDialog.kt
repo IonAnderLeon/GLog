@@ -17,7 +17,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.glog.R
 import com.example.glog.ui.components.AnimatedSwitch
 
 @Composable
@@ -33,7 +35,7 @@ fun SettingsDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "Ajustes",
+                text = stringResource(R.string.settings),
                 style = MaterialTheme.typography.titleLarge
             )
         },
@@ -48,7 +50,7 @@ fun SettingsDialog(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Tema oscuro",
+                        text = stringResource(R.string.dark_theme),
                         style = MaterialTheme.typography.bodyLarge
                     )
                     AnimatedSwitch(
@@ -65,7 +67,7 @@ fun SettingsDialog(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Cambiar nickname",
+                        text = stringResource(R.string.change_nickname),
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
@@ -76,7 +78,7 @@ fun SettingsDialog(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Letra más grande",
+                        text = stringResource(R.string.large_text),
                         style = MaterialTheme.typography.bodyLarge
                     )
                     AnimatedSwitch(
@@ -88,7 +90,7 @@ fun SettingsDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cerrar", color = MaterialTheme.colorScheme.primary)
+                Text(stringResource(R.string.close), color = MaterialTheme.colorScheme.primary)
             }
         }
     )
@@ -104,13 +106,13 @@ fun ChangeNicknameDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Cambiar nickname", style = MaterialTheme.typography.titleLarge) },
+        title = { Text(stringResource(R.string.change_nickname), style = MaterialTheme.typography.titleLarge) },
         text = {
             Column {
                 OutlinedTextField(
                     value = nickname,
                     onValueChange = { nickname = it },
-                    label = { Text("Nickname") },
+                    label = { Text(stringResource(R.string.field_nickname)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -123,12 +125,12 @@ fun ChangeNicknameDialog(
                     onDismiss()
                 }
             ) {
-                Text("Guardar", color = MaterialTheme.colorScheme.primary)
+                Text(stringResource(R.string.save), color = MaterialTheme.colorScheme.primary)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancelar", color = MaterialTheme.colorScheme.onSurface)
+                Text(stringResource(R.string.cancel), color = MaterialTheme.colorScheme.onSurface)
             }
         }
     )

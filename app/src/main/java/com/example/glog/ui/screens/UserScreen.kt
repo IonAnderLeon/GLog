@@ -25,6 +25,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
@@ -48,6 +49,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.unit.dp
@@ -146,12 +148,12 @@ private fun UserContent(
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "Error: ${uiState.error}",
+                    text = stringResource(R.string.error_message, uiState.error ?: ""),
                     color = MaterialTheme.colorScheme.error
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(onClick = { /* TODO: Retry logic */ }) {
-                    Text("Reintentar")
+                    Text(stringResource(R.string.retry))
                 }
             }
         }
@@ -181,7 +183,7 @@ private fun UserContent(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    "No hay datos de usuario",
+                    stringResource(R.string.no_user_data),
                     color = MaterialTheme.colorScheme.onBackground
                 )
             }
@@ -211,7 +213,7 @@ private fun UserHeader(user: User, onSettingsClick: () -> Unit = {}) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Profile",
+                text = stringResource(R.string.nav_profile),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
@@ -220,7 +222,7 @@ private fun UserHeader(user: User, onSettingsClick: () -> Unit = {}) {
             IconButton(onClick = onSettingsClick) {
                 Icon(
                     Icons.Default.Settings,
-                    contentDescription = "Ajustes",
+                    contentDescription = stringResource(R.string.settings),
                     modifier = Modifier.rotate(rotation)
                 )
             }
@@ -234,7 +236,7 @@ private fun UserHeader(user: User, onSettingsClick: () -> Unit = {}) {
         ) {
             AsyncImage(
                 model = user.image ?: "",
-                contentDescription = "Profile Picture",
+                contentDescription = stringResource(R.string.profile_picture),
                 modifier = Modifier
                     .size(80.dp)
                     .clip(CircleShape),
@@ -244,7 +246,7 @@ private fun UserHeader(user: User, onSettingsClick: () -> Unit = {}) {
             )
 
             Text(
-                text = user.nickname ?: "Usuario",
+                text = user.nickname ?: stringResource(R.string.user_default),
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground
@@ -271,7 +273,7 @@ private fun FavoriteGamesSection(
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = "Favoritos",
+            text = stringResource(R.string.favorites),
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
@@ -306,7 +308,8 @@ private fun GameCard(
         AsyncImage(
             model = game.imageUrl ?: "",
             contentDescription = game.title,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize()
+                .clip(RoundedCornerShape(8.dp)),
             contentScale = ContentScale.Crop,
             placeholder = painterResource(R.drawable.placeholder),
             error = painterResource(R.drawable.placeholder)
@@ -321,7 +324,7 @@ private fun GameCard(
                 .clipToBounds()
         ) {
             MarqueeText(
-                text = game.title ?: "Sin título",
+                text = game.title ?: stringResource(R.string.no_title),
                 fontSize = 12.sp,
                 color = Color.White
             )
@@ -335,7 +338,7 @@ private fun StatsSection(stats: UserStats) {
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = "Estadísticas",
+            text = stringResource(R.string.stats),
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
@@ -350,12 +353,12 @@ private fun StatsSection(stats: UserStats) {
         ) {
             StatItem(
                 value = "${stats.playTimeHours}h",
-                label = "Horas totales"
+                label = stringResource(R.string.total_hours)
             )
 
             StatItem(
                 value = stats.distinctGames.toString(),
-                label = "Juegos distintos"
+                label = stringResource(R.string.distinct_games)
             )
 
         }
@@ -365,13 +368,13 @@ private fun StatsSection(stats: UserStats) {
             verticalArrangement = Arrangement.Center) {
         StatItem(
             value = stats.favoritePlatform,
-            label = "Plataforma fav"
+            label = stringResource(R.string.favorite_platform)
         )}
         DividerSection()
         Column(modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center) {
-        Text("Welcome Gamer!",
+        Text(stringResource(R.string.welcome_gamer),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground)}

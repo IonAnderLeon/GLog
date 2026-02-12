@@ -38,10 +38,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.glog.R
 import com.example.glog.ui.screens.components.DraggableFAB
 import com.example.glog.ui.screens.components.FabPosition
 import com.example.glog.ui.state.CollectionEvent
@@ -70,7 +72,7 @@ fun ClusterScreen(
 
     Column(modifier = modifier.fillMaxSize()) {
         Text(
-            text = "Cluster",
+            text = stringResource(R.string.nav_cluster),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp),
@@ -100,7 +102,7 @@ fun ClusterScreen(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = "Colecciones",
+                        text = stringResource(R.string.tab_collections),
                         fontSize = 18.sp,
                         fontWeight = if (pagerState.currentPage == 0) FontWeight.Bold else FontWeight.Normal,
                         color = if (pagerState.currentPage == 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
@@ -131,7 +133,7 @@ fun ClusterScreen(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = "Registros",
+                        text = stringResource(R.string.tab_registers),
                         fontSize = 18.sp,
                         fontWeight = if (pagerState.currentPage == 1) FontWeight.Bold else FontWeight.Normal,
                         color = if (pagerState.currentPage == 1) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
@@ -149,7 +151,6 @@ fun ClusterScreen(
             }
         }
 
-        // Pager con las 2 pestañas y FAB arrastrable encima
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             val initialFabPosition = remember {
                 FabPosition(
@@ -238,20 +239,20 @@ private fun CreateCollectionDialog(
     var description by remember { mutableStateOf("") }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Nueva colección") },
+        title = { Text(stringResource(R.string.new_collection_title)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("Nombre") },
+                    label = { Text(stringResource(R.string.field_name)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
                     value = description,
                     onValueChange = { description = it },
-                    label = { Text("Descripción (opcional)") },
+                    label = { Text(stringResource(R.string.field_description_optional)) },
                     singleLine = false,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -263,12 +264,12 @@ private fun CreateCollectionDialog(
                     if (name.isNotBlank()) onCreate(name, description.ifBlank { null })
                 }
             ) {
-                Text("Crear", color = MaterialTheme.colorScheme.primary)
+                Text(stringResource(R.string.create), color = MaterialTheme.colorScheme.primary)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancelar", color = MaterialTheme.colorScheme.onSurface)
+                Text(stringResource(R.string.cancel), color = MaterialTheme.colorScheme.onSurface)
             }
         }
     )
@@ -291,7 +292,7 @@ private fun CreateRegisterDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Nuevo registro") },
+        title = { Text(stringResource(R.string.new_register_title)) },
         text = {
             val scrollState = rememberScrollState()
             Column(
@@ -303,14 +304,14 @@ private fun CreateRegisterDialog(
                 OutlinedTextField(
                     value = date,
                     onValueChange = { date = it },
-                    label = { Text("Fecha") },
+                    label = { Text(stringResource(R.string.field_date)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
                     value = playtimeStr,
                     onValueChange = { playtimeStr = it },
-                    label = { Text("Tiempo jugado (opcional)") },
+                    label = { Text(stringResource(R.string.field_playtime_optional)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -321,7 +322,7 @@ private fun CreateRegisterDialog(
                         selectedGame = null
                         gameSearchViewModel.searchGames(it)
                     },
-                    label = { Text("Juego (buscar por nombre)") },
+                    label = { Text(stringResource(R.string.field_game_search)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -351,7 +352,7 @@ private fun CreateRegisterDialog(
                         ) {
                             items(searchResults.take(10)) { game: Game ->
                                 Text(
-                                    text = game.title ?: "Sin título",
+                                    text = game.title ?: stringResource(R.string.no_title),
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .clickable {
@@ -384,12 +385,12 @@ private fun CreateRegisterDialog(
                     )
                 }
             ) {
-                Text("Crear", color = MaterialTheme.colorScheme.primary)
+                Text(stringResource(R.string.create), color = MaterialTheme.colorScheme.primary)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancelar", color = MaterialTheme.colorScheme.onSurface)
+                Text(stringResource(R.string.cancel), color = MaterialTheme.colorScheme.onSurface)
             }
         }
     )

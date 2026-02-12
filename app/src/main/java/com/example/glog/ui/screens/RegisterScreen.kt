@@ -62,6 +62,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import androidx.compose.ui.res.stringResource
 import com.example.glog.R
 import com.example.glog.domain.model.Game
 import com.example.glog.domain.model.Register
@@ -112,7 +113,7 @@ private fun RegisterContent(
 
         state.error?.let { errorMsg ->
             Text(
-                text = "Error: $errorMsg",
+                text = stringResource(R.string.error_message, errorMsg),
                 color = MaterialTheme.colorScheme.error,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -155,14 +156,14 @@ private fun RegisterContent(
                                     onDismissRequest = { expandedMenuId = null }
                                 ) {
                                     DropdownMenuItem(
-                                        text = { Text("Editar") },
+                                        text = { Text(stringResource(R.string.register_edit)) },
                                         onClick = {
                                             expandedMenuId = null
                                             registerToEdit = register
                                         }
                                     )
                                     DropdownMenuItem(
-                                        text = { Text("Eliminar") },
+                                        text = { Text(stringResource(R.string.register_delete)) },
                                         onClick = {
                                             expandedMenuId = null
                                             registerToDelete = register
@@ -265,7 +266,7 @@ private fun RegisterCard(
                 }
 
                 Text(
-                    text = register.gameName?.ifBlank { "Sin juego" } ?: "Sin juego",
+                    text = register.gameName?.ifBlank { stringResource(R.string.no_game) } ?: stringResource(R.string.no_game),
                     modifier = Modifier
                         .weight(1f)
                         .padding(start = 12.dp, end = 8.dp),
@@ -278,7 +279,7 @@ private fun RegisterCard(
 
                 Icon(
                     imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                    contentDescription = if (isExpanded) "Contraer" else "Expandir",
+                    contentDescription = if (isExpanded) stringResource(R.string.collapse) else stringResource(R.string.expand),
                     modifier = Modifier.size(32.dp)
                 )
             }
@@ -295,14 +296,14 @@ private fun RegisterCard(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "Tiempo: ${register.playtime?.let { "${it}h" } ?: "—"}",
+                        text = stringResource(R.string.time_format, register.playtime?.let { "${it}h" } ?: stringResource(R.string.dash)),
                         modifier = Modifier.wrapContentWidth(),
                         fontSize = 15.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         overflow = TextOverflow.Visible
                     )
                     Text(
-                        text = "Fecha: ${register.date?.ifBlank { "—" } ?: "—"}",
+                        text = stringResource(R.string.date_format, register.date?.ifBlank { stringResource(R.string.dash) } ?: stringResource(R.string.dash)),
                         modifier = Modifier.wrapContentWidth(),
                         fontSize = 15.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -320,23 +321,23 @@ private fun ConfirmDeleteRegisterDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
-    val gameName = register.gameName?.takeIf { it.isNotBlank() } ?: "Sin juego"
+    val gameName = register.gameName?.takeIf { it.isNotBlank() } ?: stringResource(R.string.no_game)
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Eliminar registro") },
+        title = { Text(stringResource(R.string.delete_register_title)) },
         text = {
-            Text("¿Eliminar el registro de \"$gameName\"? Esta acción no se puede deshacer.")
+            Text(stringResource(R.string.delete_register_confirmation, gameName))
         },
         confirmButton = {
             TextButton(
                 onClick = onConfirm
             ) {
-                Text("Eliminar", color = MaterialTheme.colorScheme.error)
+                Text(stringResource(R.string.delete), color = MaterialTheme.colorScheme.error)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancelar", color = MaterialTheme.colorScheme.onSurface)
+                Text(stringResource(R.string.cancel), color = MaterialTheme.colorScheme.onSurface)
             }
         }
     )
@@ -378,7 +379,7 @@ private fun EditRegisterDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Editar registro") },
+        title = { Text(stringResource(R.string.edit_register_title)) },
         text = {
             val scrollState = rememberScrollState()
             Column(
@@ -390,14 +391,14 @@ private fun EditRegisterDialog(
                 OutlinedTextField(
                     value = date,
                     onValueChange = { date = it },
-                    label = { Text("Fecha") },
+                    label = { Text(stringResource(R.string.field_date)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
                     value = playtimeStr,
                     onValueChange = { playtimeStr = it },
-                    label = { Text("Tiempo jugado (opcional)") },
+                    label = { Text(stringResource(R.string.field_playtime_optional)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -408,7 +409,7 @@ private fun EditRegisterDialog(
                         selectedGame = null
                         gameSearchViewModel.searchGames(it)
                     },
-                    label = { Text("Juego (buscar por nombre)") },
+                    label = { Text(stringResource(R.string.field_game_search)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -438,7 +439,7 @@ private fun EditRegisterDialog(
                         ) {
                             items(searchResults.take(10)) { game ->
                                 Text(
-                                    text = game.title ?: "Sin título",
+                                    text = game.title ?: stringResource(R.string.no_title),
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .clickable {
@@ -471,12 +472,12 @@ private fun EditRegisterDialog(
                     )
                 }
             ) {
-                Text("Guardar", color = MaterialTheme.colorScheme.primary)
+                Text(stringResource(R.string.save), color = MaterialTheme.colorScheme.primary)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancelar", color = MaterialTheme.colorScheme.onSurface)
+                Text(stringResource(R.string.cancel), color = MaterialTheme.colorScheme.onSurface)
             }
         }
     )
